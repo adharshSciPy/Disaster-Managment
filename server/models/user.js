@@ -11,9 +11,9 @@ const UserSchema = new Schema(
       type: String,
       required: true,
     },
-    role :{
-      type : String,
-      required : true,
+    role: {
+      type: String,
+      required: true,
     },
     email: {
       type: String,
@@ -24,12 +24,12 @@ const UserSchema = new Schema(
       type: String,
       required: true,
     },
-    phone :{
+    phoneNumber: {
       type: String,
-      required : true,
+      required: true,
     }
-},
-  
+  },
+
   { timestamps: true }
 
 );

@@ -11,8 +11,8 @@ function LandingPage() {
             <Typography variant="h5" color="primary" >Disaster Managment</Typography>
           </Box>
 
-          <Box sx={{ height: '20rem', width: '20rem', overflow: 'hidden' }}>
-            <img sx={{ height: '50%', width: '50%' }} src="https://img.lovepik.com/photo/40012/6170.jpg_wh860.jpg" alt="" />
+          <Box sx={{ height: '30rem', width: '30rem', overflow: 'hidden' }}>
+            <img sx={{ height: '100%', width: '100%' }} src="https://img.lovepik.com/photo/40012/6170.jpg_wh860.jpg" alt="" />
           </Box>
         </Stack>
       </Box>

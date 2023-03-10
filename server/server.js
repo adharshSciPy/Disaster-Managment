@@ -16,24 +16,26 @@ const PORT = process.env.PORT || 5000;
 app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(__dirname + "/../client/public"));
+// app.use(express.static(__dirname + "/../client/public"));
 app.use(cookieParser())
+// app.user(cor())
+// app.use(
+//   cors({
+//     origin: ["http://localhost:3000"],
+//     methods: "GET,POST,PUT,DELETE,OPTIONS",
+//   })
+// );
 
-app.use(
-  cors({
-    origin: ["http://localhost:3000"],
-    methods: "GET,POST,PUT,DELETE,OPTIONS",
-  })
-);
+
 //Require application Route modules
 const userRoutes = require("./routes/users");
-const reliefRoutes =require("./routes/reliefCenterRoute")
+const reliefRoutes = require("./routes/reliefCenterRoute")
 const collectionRoutes = require("./routes/ColllectionCenetrRoute")
 
-app.use("/relief",reliefRoutes)
-app.use("/collection",collectionRoutes)
+app.use("/relief", reliefRoutes)
+app.use("/collection", collectionRoutes)
 app.use("/user", userRoutes);
-// app.use("/user", orgRoutes)
+
 
 app.listen(PORT, function () {
   console.log(`Server Runs Perfectly at http://localhost:${PORT}`);

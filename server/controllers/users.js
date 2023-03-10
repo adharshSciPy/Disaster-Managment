@@ -12,8 +12,7 @@ module.exports = {
   //  ---------------------------------------- //signup method to add a new user//--------------------------- //
 
   signup: async (req, res) => {
-    const {username,role,email,password,phone,firstName,lastName } = req.body;
-    
+    const { role, firstName, lastName, email, password, phoneNumber } = req.body;
     const { errors, isValid } = SignupValidation(req.body);
 
     try {
@@ -24,23 +23,24 @@ module.exports = {
         await User.findOne({ email }).then(async (exist) => {
           if (exist) {
             errors.email = "Email already in use";
-            res.status(404).json(errors); 
+            res.status(404).json({ message: "Email is already in use", errors });
           } else {
             const hashedpassword = bcrypt.hashSync(password, 8);
-            const result = await User.create({              
+            const result = await User.create({
               password: hashedpassword,
               firstName,
               lastName,
               role,
               email,
-              phone 
+              phoneNumber
             });
-            res.status(201).json({ message: "user added with success"});
+            res.status(201).json({ message: "Account Created" });
           }
         });
       }
     } catch (error) {
       console.log(error.message);
+      res.status(500).json({ message: 'Server Error' })
     }
   },
   //  ---------------------------------------- //signin method to add a new user//--------------------------- //
@@ -60,12 +60,12 @@ module.exports = {
           }
           // Compare sent in password with found user hashed password
           const passwordMatch = bcrypt.compareSync(password, user.password);
-          if (!passwordMatch) {   
+          if (!passwordMatch) {
             errors.password = "Wrong Password";
-            res.status(404).json(errors);
+            res.status(404).json({message: 'Password not matched', errors});
           } else {
             // generating a token and storing it in a cookie
-            const token = jwt.sign({ _id: user._id , role: user.role}, "sooraj_DOING_GOOD", {
+            const token = jwt.sign({ _id: user._id, role: user.role }, "sooraj_DOING_GOOD", {
               expiresIn: "8h",
             });
             const options = {
@@ -74,58 +74,59 @@ module.exports = {
               sameSite: "lax",
             };
 
-            const data ={
-               id : user._id
+            const data = {
+              id: user._id
             }
 
             // console.log(data);
             // res.cookie("Authorization", token, options);
             res.status(201).json({
               token,
-              role : user.role
-            });000
+              role: user.role,
+              message: 'Logged In Succesfully'
+            }); 
           }
         });
       }
     } catch (error) {
       console.log(error.message);
+      res.status(500).json({ message: 'Server Error' })
     }
   },
 
 
-  verifyToken : async(req,res) =>{
-    try{
-      const token = req.body.token ;
-      const decoded = jwt.verify(token,"sooraj_DOING_GOOD")
+  verifyToken: async (req, res) => {
+    try {
+      const token = req.body.token;
+      const decoded = jwt.verify(token, "sooraj_DOING_GOOD")
       res.status(200).json(decoded)
 
-    }catch(error) {
+    } catch (error) {
       return res.status(401).json({
-        message : 'Auth Failed'
+        message: 'Auth Failed'
       });
     }
 
   },
 
-   getUser : async(req,res) => {
+  getUser: async (req, res) => {
     const id = req.params.id;
-    console.log(id,"id vanno");
+    console.log(id, "id vanno");
     try {
       const userdata = await User.findById(id);
-       const data = {
-        firstName : userdata.firstName,
-        LastName : userdata.lastNameName,
-        email : userdata.email,
-       }
+      const data = {
+        firstName: userdata.firstName,
+        LastName: userdata.lastNameName,
+        email: userdata.email,
+      }
       res.status(200).json(data)
 
-    }catch (error) {
+    } catch (error) {
       return res.status(401).json({
-        message : 'Get Req Failed'
+        message: 'Get Req Failed'
       });
     }
-   }
   }
+}
 
 
- 

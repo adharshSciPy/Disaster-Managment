@@ -6,6 +6,8 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Link from '@mui/material/Link';
 import { Link as RouterLink } from 'react-router-dom'
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 function Login() {
 
@@ -46,12 +48,23 @@ function Login() {
     event.preventDefault();
     const errors = validateFormData(formData);
     setFormErrors(errors)
+    const form = {
+      email: formData.email,
+      password: formData.password
+    }
+
     if (Object.keys(errors).length === 0) {
       console.log('No errors')
       // no error post api
-
-
-
+      axios.post('/user/signin', form)
+        .then((res) => {
+          console.log(res)
+          toast.success(res.data.message)
+        })
+        .catch((err) => {
+          console.log(err)
+          toast.error(err.response.data.message)
+        })
     }
     else {
       console.log("Errors Found")
@@ -81,7 +94,6 @@ function Login() {
                   onChange={handleInputChange}
                   error={!!formErrors.email}
                   helperText={formErrors.email}
-                  size="small"
                 />
               </Grid>
 
@@ -98,7 +110,6 @@ function Login() {
                   onChange={handleInputChange}
                   error={!!formErrors.password}
                   helperText={formErrors.password}
-                  size="small"
                 />
               </Grid>
 

@@ -9,11 +9,18 @@ import ReliefCenter from './scenes/volunteer/reliefCenter/ReliefCenter'
 import ReliefCenterPage from './scenes/volunteer/reliefCenter/ReliefCenterPage'
 import CollectionCenter from './scenes/volunteer/collection/CollectionCenter'
 import NavBar from './scenes/main/NavBar'
+import SnackBar from './scenes/main/Snackbar'
+import axios from 'axios'
 
 function App() {
+
+  axios.defaults.baseURL = 'http://localhost:5000';
+  // axios.defaults.withCredentials = true;
+
   return (
     <BrowserRouter>
       <NavBar />
+      <SnackBar />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/register" element={<Register />} />

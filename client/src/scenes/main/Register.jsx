@@ -7,10 +7,13 @@ import TextField from "@mui/material/TextField";
 import Link from '@mui/material/Link';
 import { Link as RouterLink } from 'react-router-dom'
 import { useState } from 'react';
+import axios from 'axios'
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 function Register() {
+  const navigate = useNavigate()
   // form validation
-
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -20,7 +23,6 @@ function Register() {
     phoneNumber: '',
   });
   const [formErrors, setFormErrors] = useState({});
-
 
 
   const [role, setRole] = useState('')
@@ -49,7 +51,7 @@ function Register() {
     if (!data.firstName) {
       errors.firstName = 'First Name is required';
     } else if (!/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/.test(data.firstName)) {
-      errors.firstName = 'Full Name is invalid';
+      errors.firstName = 'First Name is invalid';
     }
 
 
@@ -57,7 +59,7 @@ function Register() {
     if (!data.lastName) {
       errors.lastName = 'Last Name is required';
     } else if (!/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/.test(data.lastName)) {
-      errors.lastName = 'Full Name is invalid';
+      errors.lastName = 'Last Name is invalid';
     }
 
 
@@ -108,7 +110,27 @@ function Register() {
     const errors = validateFormData(formData);
     setFormErrors(errors)
     if (Object.keys(errors).length === 0) {
-      console.log('No errors')
+      console.log('Form Validation succesful ready to post')
+      // posting api
+      const form = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+        phoneNumber: formData.phoneNumber,
+        role: role
+      }
+
+
+      axios.post("/user/signup", form)
+        .then((res) => {
+          console.log(res)
+          toast.success(res.data.message);
+          navigate('/login')
+        })
+        .catch((err) => {
+          toast.error(err.response.data.message);
+        })
     }
     else {
       console.log("Errror found in validation")
@@ -132,7 +154,7 @@ function Register() {
                   onChange={handleInputChange}
                   error={!!formErrors.firstName}
                   helperText={formErrors.firstName}
-
+                  InputProps={{ style: { fontSize: 14 } }}
                   autoFocus
                   fullWidth
                   size="small"
@@ -148,6 +170,7 @@ function Register() {
                   helperText={formErrors.lastName}
                   autoFocus
                   fullWidth
+                  InputProps={{ style: { fontSize: 14 } }}
                   size="small"
                 />
               </Grid>
@@ -161,7 +184,7 @@ function Register() {
                   onChange={handleInputChange}
                   error={!!formErrors.email}
                   helperText={formErrors.email}
-
+                  InputProps={{ style: { fontSize: 14 } }}
                   autoFocus
                   fullWidth
                   size="small"
@@ -177,7 +200,7 @@ function Register() {
                   onChange={handleInputChange}
                   error={!!formErrors.phoneNumber}
                   helperText={formErrors.phoneNumber}
-
+                  InputProps={{ style: { fontSize: 14 } }}
                   autoFocus
                   fullWidth
                   size="small"
@@ -193,7 +216,7 @@ function Register() {
                   onChange={handleInputChange}
                   error={!!formErrors.password}
                   helperText={formErrors.password}
-
+                  InputProps={{ style: { fontSize: 14 } }}
                   autoFocus
                   fullWidth
                   size="small"
@@ -208,7 +231,7 @@ function Register() {
                   onChange={handleInputChange}
                   error={!!formErrors.confirmPassword}
                   helperText={formErrors.confirmPassword}
-
+                  InputProps={{ style: { fontSize: 14 } }}
                   autoFocus
                   fullWidth
                   size="small"
@@ -229,6 +252,7 @@ function Register() {
                   helperText={formErrors.role}
                   onChange={handleChange}
                   size="small"
+                  InputProps={{ style: { fontSize: 14 } }}
                 >
                   <MenuItem value='reliefCenter'>Relief Center</MenuItem>
                   <MenuItem value='collectionCenter'>Collection Center</MenuItem>
