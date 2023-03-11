@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 function ReliefItem() {
-  return (
-    <div>ReliefItem</div>
-  )
+  return <div>ReliefItem</div>;
 }
 
-export default ReliefItem
+export default ReliefItem;
