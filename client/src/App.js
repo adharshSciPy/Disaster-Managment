@@ -11,6 +11,7 @@ import CollectionCenter from "./scenes/volunteer/collection/CollectionCenter";
 import NavBar from "./scenes/main/NavBar";
 import SnackBar from "./scenes/main/Snackbar";
 import axios from "axios";
+import MyReliefCenter from "./scenes/volunteer/reliefCenter/MyReliefCenter";
 
 function App() {
   axios.defaults.baseURL = "http://localhost:5000";
@@ -36,6 +37,7 @@ function App() {
           {/* relief-center */}
           <Route path="relief-center">
             <Route index element={<ReliefCenter />} />
+            <Route path="my-relief-center" element={<MyReliefCenter />} />
             <Route path=":relief-center-page" element={<ReliefCenterPage />} />
           </Route>
 
