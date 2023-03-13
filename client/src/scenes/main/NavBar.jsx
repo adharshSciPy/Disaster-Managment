@@ -13,9 +13,13 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import Container from "@mui/material/Container";
+import { logout } from "../../store/auth";
+import LogoutIcon from '@mui/icons-material/Logout';
+import Cookies from "js-cookie";
+
 
 const drawerWidth = 240;
 const navItems = ["Home", "About", "Contact"];
@@ -34,9 +38,18 @@ const mainNavItems = [
   },
 ];
 
+
 function DrawerAppBar(props) {
   const naivgate = useNavigate();
+  const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  // logout functionality
+  const handleLogout = () => {
+    dispatch(logout())
+    naivgate('/')
+    Cookies.remove('Token')
+  }
+
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   // navlink active style
@@ -77,7 +90,7 @@ function DrawerAppBar(props) {
 
         {isAuthenticated &&
           navItems.map((item, val) => (
-            <ListItem key={val       } disablePadding>
+            <ListItem key={val} disablePadding>
               <ListItemButton sx={{ textAlign: "center" }}>
                 <ListItemText primary={item} />
               </ListItemButton>
@@ -130,11 +143,13 @@ function DrawerAppBar(props) {
                     </Button>
                   </NavLink>
                 ))}
-              {isAuthenticated && <Button>Logout</Button>}
+              {isAuthenticated && <Button onClick={handleLogout} startIcon={<LogoutIcon />} sx={{ backgroundColor: 'white', color: '#fff' }}>Logout</Button>}
             </Box>
           </Toolbar>
         </Container>
       </AppBar>
+
+
       <Box component="nav">
         <Drawer
           container={container}

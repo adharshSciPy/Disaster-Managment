@@ -16,7 +16,7 @@ function ReliefCenterPage() {
     width: 500,
     bgcolor: '#fff',
     boxShadow: 24,
-    pt:2,
+    pt: 2,
     p: 4,
     fontFamily: 'Poppins sans-serif'
   };
@@ -109,9 +109,9 @@ function ReliefCenterPage() {
       >
         <Fade in={open}>
           <Box sx={style}>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{mb:3}}>
-            <Typography variant="body1" color="initial" >Center Details</Typography>
-            <Button variant="contained" size="small">Save</Button>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 3 }}>
+              <Typography variant="body1" color="initial" >Center Details</Typography>
+              <Button variant="contained" size="small">Save</Button>
             </Stack>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
@@ -123,7 +123,7 @@ function ReliefCenterPage() {
               </Grid>
 
               <Grid item xs={12} sm={12}>
-                <TextField label="Outlined" variant="outlined" size="small"  fullWidth/>
+                <TextField label="Outlined" variant="outlined" size="small" fullWidth />
               </Grid>
             </Grid>
           </Box>

@@ -110,20 +110,20 @@ function ReliefCenter() {
         <Fade in={open}>
           <Box sx={style}>
             <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 3 }}>
-              <Typography variant="body1" color="initial" >Center Details</Typography>
+              <Typography variant="h6" color="primary" >Accomodation Details</Typography>
               <Button variant="contained" size="small">Save</Button>
             </Stack>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
-                <TextField label="Outlined" variant="outlined" size="small" />
+                <TextField label="Name" variant="outlined" size="small"  />
               </Grid>
 
               <Grid item xs={12} sm={6}>
-                <TextField label="Outlined" variant="outlined" size="small" />
+                <TextField label="Location" variant="outlined" size="small" />
               </Grid>
 
               <Grid item xs={12} sm={12}>
-                <TextField label="Outlined" variant="outlined" size="small" fullWidth />
+                <TextField label="Capacity" variant="outlined" size="small" fullWidth />
               </Grid>
             </Grid>
           </Box>

@@ -125,7 +125,7 @@ function CollectionCenter() {
               justifyContent="space-between"
               sx={{ mb: 3 }}
             >
-              <Typography variant="body1" color="initial">
+              <Typography variant="h6" color="primary">
                 Center Details
               </Typography>
               <Button variant="contained" size="small">
@@ -134,20 +134,20 @@ function CollectionCenter() {
             </Stack>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
-                <TextField label="Outlined" variant="outlined" size="small" />
+                <TextField label="Name" variant="outlined" size="small" />
               </Grid>
 
               <Grid item xs={12} sm={6}>
-                <TextField label="Outlined" variant="outlined" size="small" />
-              </Grid>
-
-              <Grid item xs={12} sm={12}>
                 <TextField
-                  label="Outlined"
+                  type='tel'
+                  label="Contact Number"
                   variant="outlined"
                   size="small"
                   fullWidth
                 />
+              </Grid>
+              <Grid item xs={12} sm={12}>
+                <TextField label="Address" variant="outlined" size="small" fullWidth />
               </Grid>
             </Grid>
           </Box>

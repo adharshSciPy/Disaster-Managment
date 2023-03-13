@@ -1,14 +1,16 @@
 import { Box, Button, Container, Stack, Typography } from "@mui/material";
 import React from "react";
 import heroImg from "../../assets/hero-img.png";
+import { useNavigate } from "react-router-dom";
 
 function LandingPage() {
+  const navigate = useNavigate()
   return (
     <Box
       sx={{
         backgroundColor: "#000080",
         mt: -2,
-        minHeight: "90vh",
+        minHeight: "100vh",
         width: "100%",
         display: "flex",
         flexDirection: "column",
@@ -48,6 +50,7 @@ function LandingPage() {
                       backgroundColor: "#fff",
                     },
                   }}
+                  onClick={() => navigate('/login')}
                 >
                   Get Started
                 </Button>
