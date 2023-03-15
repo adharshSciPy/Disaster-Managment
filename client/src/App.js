@@ -6,7 +6,7 @@ import Login from "./scenes/main/Login";
 import AdminHome from "./scenes/admin/AdminHome";
 import AdminLayout from "./scenes/admin/AdminLayout";
 import ReliefCenter from "./scenes/volunteer/reliefCenter/ReliefCenter";
-import ReliefCenterPage from "./scenes/volunteer/reliefCenter/ReliefCenterPage";
+// import ReliefCenterPage from "./scenes/volunteer/reliefCenter/ReliefCenterPage";
 import CollectionCenter from "./scenes/volunteer/collection/CollectionCenter";
 import NavBar from "./scenes/main/NavBar";
 import SnackBar from "./scenes/main/Snackbar";
@@ -35,11 +35,9 @@ function App() {
 
         <Route path="/volunteer">
           {/* relief-center */}
-          <Route path="relief-center">
-            <Route index element={<ReliefCenter />} />
-            <Route path="my-relief-center" element={<MyReliefCenter />} />
-            <Route path=":relief-center-page" element={<ReliefCenterPage />} />
-          </Route>
+          <Route path="relief-center" element={<ReliefCenter />} />
+          <Route path="my-relief-center" element={<MyReliefCenter />} />
+          {/* <Route path=":relief-center-page" element={<ReliefCenterPage />} /> */}
 
           {/* collection center */}
           <Route path="collection-center" element={<CollectionCenter />} />

@@ -22,7 +22,7 @@ import Cookies from "js-cookie";
 
 
 const drawerWidth = 240;
-const navItems = ["Home", "About", "Contact"];
+// navItems when user not logged in
 const mainNavItems = [
   {
     title: "Home",
@@ -38,11 +38,24 @@ const mainNavItems = [
   },
 ];
 
+// navItems for user who have relief center role
+const reliefNavItems = [
+  {
+    title: 'My Relief Center',
+    link: 'volunteer/my-relief-center'
+  },
+  {
+    title: 'All Relief Centers',
+    link: 'volunteer/relief-center'
+  }
+]
+
 
 function DrawerAppBar(props) {
   const naivgate = useNavigate();
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const role = useSelector((state) => state.auth.role)
   // logout functionality
   const handleLogout = () => {
     dispatch(logout())
@@ -56,7 +69,8 @@ function DrawerAppBar(props) {
   let activeStyle = {
     textDecoration: "none",
     backgroundColor: "skyblue",
-    borderRadius: ".8rem",
+    borderRadius: ".5rem",
+    padding: '.1rem',
     textAlign: "center",
   };
 
@@ -88,14 +102,21 @@ function DrawerAppBar(props) {
             </ListItem>
           ))}
 
-        {isAuthenticated &&
-          navItems.map((item, val) => (
-            <ListItem key={val} disablePadding>
-              <ListItemButton sx={{ textAlign: "center" }}>
-                <ListItemText primary={item} />
-              </ListItemButton>
-            </ListItem>
-          ))}
+        {
+          role === 'relief' &&
+          reliefNavItems.map((item, val) => {
+            return (
+              <ListItem key={val} disablePadding>
+                <ListItemButton
+                  sx={{ textAlign: "center" }}
+                  onClick={() => naivgate(item.link)}
+                >
+                  <ListItemText primary={item.title} />
+                </ListItemButton>
+              </ListItem>
+            )
+          })
+        }
       </List>
     </Box>
   );
@@ -143,7 +164,21 @@ function DrawerAppBar(props) {
                     </Button>
                   </NavLink>
                 ))}
-              {isAuthenticated && <Button onClick={handleLogout} startIcon={<LogoutIcon />} sx={{ backgroundColor: 'white', color: '#fff' }}>Logout</Button>}
+
+              {role === 'relief' &&
+                reliefNavItems.map((item, val) => (
+                  <NavLink
+                    to={item.link}
+                    style={({ isActive }) =>
+                      isActive ? activeStyle : nonActiveStyle
+                    }
+                  >
+                    <Button sx={{ color: "#fff" }}>
+                      {item.title}
+                    </Button>
+                  </NavLink>
+                ))}
+              {isAuthenticated && <Button onClick={handleLogout} startIcon={<LogoutIcon />} sx={{ backgroundColor: 'white', color: '#fff', ml: 4 }}>Logout</Button>}
             </Box>
           </Toolbar>
         </Container>

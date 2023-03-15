@@ -24,7 +24,7 @@ module.exports = {
     const id = req.params.id;
     console.log(id, "id vanno");
     try {
-      const userdata = await ReliefCenter.findById(id);
+      const userdata = await ReliefCenter.find({ InCharge: req.params.id });
       // const data = {
       //   firstName: userdata.firstName,
       //   LastName: userdata.lastNameName,
@@ -41,11 +41,11 @@ module.exports = {
 
   addadmission: async (req, res) => {
     const id = req.params.id;
-    const {Admission } = req.body;
-    
+    const { Admission } = req.body;
+
     try {
-      const userdata = await ReliefCenter.updateOne({id}, {
-        $set:{
+      const userdata = await ReliefCenter.updateOne({ id }, {
+        $set: {
           Admission
         }
       });
@@ -57,20 +57,20 @@ module.exports = {
     }
   },
 
-  getAllReliefCenter : async (req,res) => {
+  getAllReliefCenter: async (req, res) => {
 
     try {
       const user = await ReliefCenter.find()
       res.status(200).json(user)
-  } catch (error) {
-      res.status(500).json({message:error.message})
-  }
+    } catch (error) {
+      res.status(500).json({ message: error.message })
+    }
 
   },
 
 
   addReliefSupplyRequest: async (req, res) => {
-    const { CenterName,Phone,ItemName,Qunatity,Status,AcceptedBy,Delivered} = req.body;
+    const { CenterName, Phone, ItemName, Qunatity, Status, AcceptedBy, Delivered } = req.body;
     try {
       console.log(req.body)
       const result = await ReliefSupply.create({
