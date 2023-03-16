@@ -46,11 +46,13 @@ function MyReliefCenter() {
     };
 
 
+
     const loadData = () => {
         axios.get(`/relief/getreliefcenterbyid/${userId}`)
             .then((res) => {
                 console.log(res)
                 setReliefCenterData(res.data)
+                setUpdateNumber(res.data[0].Capacity)
                 const dataArr = res.data
                 if (dataArr.length === 0) {
                     setReliefCenter(false)
@@ -64,11 +66,18 @@ function MyReliefCenter() {
             })
     }
 
-
     useEffect(() => {
         loadData()
     }, []);
 
+
+    // update slot
+    const [updateSlot, setSlotUpdate] = useState(false)
+    const [updateNumber, setUpdateNumber] = useState()
+    const handleSlotUpdate = () => {
+        console.log('update slot')
+        !updateSlot ? setSlotUpdate(true) : setSlotUpdate(false)
+    }
 
     // submit function of form
     const handleSubmit = (event) => {
@@ -131,7 +140,7 @@ function MyReliefCenter() {
 
 
                             <Grid item sx={6}>
-                                <Button variant="outlined" size="small" onClick={handleOpen} >
+                                <Button variant="outlined" size="small" onClick={handleOpen}>
                                     Supply Request
                                 </Button>
                             </Grid>
@@ -160,13 +169,25 @@ function MyReliefCenter() {
 
                                         <Box sx={{ p: 3 }}>
                                             <Stack direction="column" alignItems='center' justifyContent="center">
-
-                                                <Typography variant="h2" color="initial">{reliefCenterData[0].Capacity}</Typography>
-                                                <Button size="small">Update Slot</Button>
-
+                                                {
+                                                    !updateSlot ?
+                                                        <Typography variant="h2" color="initial" onDoubleClick={handleSlotUpdate}>{reliefCenterData[0].Capacity}</Typography>
+                                                        :
+                                                        <Stack direction="row" alignItems="center" justifyContent='center'>
+                                                            <Button onClick={() => setUpdateNumber(updateNumber !== 0 ? updateNumber - 1 : 0)}>-</Button>
+                                                            <Typography variant="h2" color="primary">{updateNumber}</Typography>
+                                                            <Button onClick={() => setUpdateNumber(updateNumber !== 0 && updateNumber + 1)}>+</Button>
+                                                        </Stack>
+                                                }
                                             </Stack>
-
                                         </Box>
+
+                                        {updateSlot &&
+                                            <Box sx={{ mr: 3 }}>
+                                                <Button size="small" onClick={handleSlotUpdate}>Update Slot</Button>
+                                            </Box>
+                                        }
+
                                     </Stack>
                                 </Card>
 
@@ -197,7 +218,7 @@ function MyReliefCenter() {
                                                         <TableCell align="right">{row.fat}</TableCell>
                                                         <TableCell align="right">
                                                             <ButtonGroup size="small" aria-label="small button group">
-                                                                <IconButton color= "error">
+                                                                <IconButton color="error">
                                                                     <DeleteIcon />
                                                                 </IconButton>
                                                                 <IconButton color="success">
