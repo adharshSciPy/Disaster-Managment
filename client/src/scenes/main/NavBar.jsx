@@ -40,13 +40,14 @@ const mainNavItems = [
 
 // navItems for user who have relief center role
 const reliefNavItems = [
-  {
-    title: 'My Relief Center',
-    link: 'volunteer/my-relief-center'
-  },
+
   {
     title: 'All Relief Centers',
     link: 'volunteer/relief-center'
+  },
+  {
+    title: 'My Relief Center',
+    link: 'volunteer/my-relief-center'
   }
 ]
 
@@ -55,13 +56,14 @@ const reliefNavItems = [
 // navItems for user who have collection center role
 const collectionNavItems = [
   {
-    title: 'My Collection Center',
-    link: 'collection/my-collection-center'
-  },
-  {
     title: 'All Collection Centers',
     link: 'volunteer/collection-center'
+  },
+  {
+    title: 'My Collection Center',
+    link: 'volunteer/my-collection-center'
   }
+
 ]
 
 

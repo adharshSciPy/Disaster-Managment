@@ -1,4 +1,4 @@
-const ReliefCenter = require("../models/reliefCenter");
+  const ReliefCenter = require("../models/reliefCenter");
 const ReliefSupply = require("../models/reliefSupply")
 
 module.exports = {

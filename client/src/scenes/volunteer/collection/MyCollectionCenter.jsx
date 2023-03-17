@@ -1,48 +1,45 @@
 import React from 'react'
 import Typography from '@mui/material/Typography'
-import { Button, Card, Container, Grid, Stack, Table, TextField, Modal, Fade, Paper, Backdrop, TableContainer, TableHead, TableRow, TableCell, TableBody, IconButton } from '@mui/material'
+import { Button, Card, Container, Grid, Modal, Stack, TextField } from '@mui/material'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Box } from '@mui/system'
-import { toast } from 'react-toastify'
-import ButtonGroup from '@mui/material/ButtonGroup';
-import DeleteIcon from '@mui/icons-material/Delete';
-import CheckIcon from '@mui/icons-material/Check';
+import { DataGrid } from '@mui/x-data-grid';
 
-function MyReliefCenter() {
-    // table demo data
-    function createData(
-        name: string,
-        calories: number,
-        fat: number,
-        carbs: number,
-        protein: number,
-    ) {
-        return { name, calories, fat, carbs, protein };
-    }
+function MyCollectionCenter() {
 
-    const rows = [
-        createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-        createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-        createData('Eclair', 262, 16.0, 24, 6.0),
-        createData('Cupcake', 305, 3.7, 67, 4.3),
-        createData('Gingerbread', 356, 16.0, 49, 3.9),
-    ];
 
-    const [reliefCenter, setReliefCenter] = useState(false)
-    const [reliefCenterData, setReliefCenterData] = useState([])
+    // modal style
+    const style = {
+        position: 'absolute',
+        top: '30%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 700,
+        bgcolor: '#fff',
+        boxShadow: 24,
+        pt: 2,
+        p: 4,
+    };
+    // modal states
+    const [open, setOpen] = React.useState(false);
+    const handleClose = () => setOpen(false);
+    const [modalData, setModalData] = React.useState('')
+
+
+    const [collectionCenter, setCollectionCenter] = useState(false)
+    const [collectionCenterData, setCollectionCenterData] = useState([])
     const userId = '640ebd6f861347e3c197e5d7'
 
     // creating relief center 
-    const [reliefForm, setReliefForm] = useState({
+    const [collectionForm, setCollectionForm] = useState({
         CenterName: '',
-        Phone: '',
-        Capacity: '',
+        Phone: ''
     });
 
     const handleChange = (event) => {
         const { name, value } = event.target;
-        setReliefForm({ ...reliefForm, [name]: value });
+        setCollectionForm({ ...collectionForm, [name]: value });
     };
 
 
@@ -51,14 +48,13 @@ function MyReliefCenter() {
         axios.get(`/relief/getreliefcenterbyid/${userId}`)
             .then((res) => {
                 console.log(res)
-                setReliefCenterData(res.data)
-                setUpdateNumber(res.data[0].Capacity)
+                setCollectionCenterData(res.data)
                 const dataArr = res.data
                 if (dataArr.length === 0) {
-                    setReliefCenter(false)
+                    setCollectionCenter(false)
                 }
                 else {
-                    setReliefCenter(true)
+                    setCollectionCenter(true)
                 }
             })
             .catch((err) => {
@@ -71,88 +67,111 @@ function MyReliefCenter() {
     }, []);
 
 
-    // update slot
-    const [updateSlot, setSlotUpdate] = useState(false)
-    const [updateNumber, setUpdateNumber] = useState()
-    const handleSlotUpdate = () => {
-        console.log('update slot')
-        !updateSlot ? setSlotUpdate(true) : setSlotUpdate(false)
-    }
 
     // submit function of form
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        console.log(reliefForm);
+    // const handleSubmit = (event) => {
+    //     event.preventDefault();
+    //     console.log(reliefForm);
 
-        const form = {
-            CenterName: reliefForm.CenterName,
-            Capacity: reliefForm.Capacity,
-            Phone: reliefForm.Phone,
-            InCharge: userId
+    //     const form = {
+    //         CenterName: reliefForm.CenterName,
+    //         Capacity: reliefForm.Capacity,
+    //         Phone: reliefForm.Phone,
+    //         InCharge: userId
+    //     };
+
+    //     axios.post('relief/addreliefcenter', form)
+    //         .then((res) => {
+    //             console.log(res);
+    //             toast.success('Relief Center Created');
+    //             setReliefForm({
+    //                 CenterName: '',
+    //                 Phone: '',
+    //                 Capacity: ''
+    //             });
+    //             loadData()
+    //         })
+    //         .catch((err) => {
+    //             console.log(err);
+    //         });
+    // };
+
+
+    // datarid
+    function getStatusButton(status, rowData) {
+        const handleAccept = () => {
+            // here api to update the status of collection center
         };
 
-        axios.post('relief/addreliefcenter', form)
-            .then((res) => {
-                console.log(res);
-                toast.success('Relief Center Created');
-                setReliefForm({
-                    CenterName: '',
-                    Phone: '',
-                    Capacity: ''
-                });
-                loadData()
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    };
+        const handleDispatch = () => {
+            setOpen(true)
+            setModalData(rowData)
+        }
+
+        switch (status) {
+            case 'pending':
+                return <Button variant="outlined" size="small" onClick={handleAccept} color="info">Accept</Button>;
+            case 'accepted':
+                return <Button variant="outlined" size="small" onClick={handleDispatch} color="success">Dispatch</Button>;
+            default:
+                return '';
+        }
+    }
+
+    const columns = [
+        { field: 'id', headerName: 'ID', width: 70 },
+        { field: 'name', headerName: 'Name', width: 150 },
+        { field: 'item', headerName: 'Item', width: 200 },
+        { field: 'quantity', headerName: 'Quantity', width: 130 },
+        {
+            field: 'status',
+            headerName: 'Status',
+            width: 130,
+            // hide: true
+        },
+        {
+            field: 'action',
+            headerName: 'Action',
+            width: 130,
+            renderCell: (params) => (
+                <div>
+                    {getStatusButton(params.row.status, params.row)}
+                </div>
+            )
+        }
+    ];
+
+    const rows = [
+        { id: 1, name: 'Aswas Relif Center', item: 'Clothes', quantity: '8', status: 'pending' },
+        { id: 2, name: 'Jane Smith', item: 'Food', quantity: '2', status: 'accepted' },
+        { id: 3, name: 'Bob Johnson', item: 'Snacks', quantity: '3', status: 'pending' },
+        { id: 4, name: 'Aswas Relif Center', item: 'Clothes', quantity: '10', status: 'pending' },
+        { id: 5, name: 'Jane Smith', item: 'Water', quantity: '8', status: 'accepted' },
+        { id: 6, name: 'Bob Johnson', item: 'Clothes', quantity: '8', status: 'pending' },
+        { id: 7, name: 'Aswas Relif Center', item: 'Fuel', quantity: '10', status: 'pending' },
+        { id: 8, name: 'Jane Smith', item: 'Food', quantity: '8', status: 'accepted' },
+        { id: 9, name: 'Bob Johnson', item: 'Clothes', quantity: '20', status: 'pending' },
+    ];
 
 
-    // modal style
-    const style = {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: 500,
-        bgcolor: '#fff',
-        boxShadow: 24,
-        pt: 2,
-        p: 4,
-        // fontFamily: 'Poppins sans-serif'
-    };
-
-    // modal states
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
     return (
         <>
             <Container maxWidth="lg" sx={{ mt: 6 }}>
                 {
-                    reliefCenter ?
+                    collectionCenter ?
                         <Grid container spacing={2} alignItems="center" justifyContent="space-between" >
                             <Grid item sx={6}>
                                 <Typography variant="h6" color="primary" sx={{ fontWeight: 600, fontSize: '15px' }}>
-                                    My Relief Center
+                                    My Collection Center
                                 </Typography>
                             </Grid>
-
-
-                            <Grid item sx={6}>
-                                <Button variant="outlined" size="small" onClick={handleOpen}>
-                                    Supply Request
-                                </Button>
-                            </Grid>
-
-
 
 
                             <Grid item xs={12}>
                                 <Card sx={{ width: '100%', height: '25vh', borderRadius: '1rem', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px', backgroundColor: '#0000800' }}>
                                     <Grid container alignItems="center" justifyContent="space-between" sx={{ pt: 2 }}>
                                         <Grid item xs={6} sx={{ p: 2 }}>
-                                            <Typography variant="h6" color="initial" sx={{ mb: 3 }}>{reliefCenterData[0].CenterName}</Typography>
+                                            <Typography variant="h6" color="initial" sx={{ mb: 3 }}>{collectionCenterData[0].CenterName}</Typography>
                                             <Stack direction="row" alignItems="center" justifyContent="start" spacing={2}>
                                                 <Box>
                                                     <Typography variant="body2" color="initial">contact Info: </Typography>
@@ -160,79 +179,20 @@ function MyReliefCenter() {
                                                 </Box>
 
                                                 <Box>
-                                                    <Typography variant="body2" color="initial">{reliefCenterData[0].Phone}</Typography>
+                                                    <Typography variant="body2" color="initial">{collectionCenterData[0].Phone}</Typography>
                                                     <Typography variant="body1" color="primary">Karyavattom</Typography>
                                                 </Box>
                                             </Stack>
                                         </Grid>
-
-
-                                        <Grid item xs={2} sx={{ p: 3 }}>
-                                            <Stack direction="column" alignItems='center' justifyContent="center">
-                                                {
-                                                    !updateSlot ?
-                                                        <Typography variant="h2" color="initial" onDoubleClick={handleSlotUpdate}>{reliefCenterData[0].Capacity}</Typography>
-                                                        : 
-                                                        <Stack direction="row" alignItems="center" justifyContent='center'>
-                                                            <Button onClick={() => setUpdateNumber(updateNumber !== 0 ? updateNumber - 1 : 0)}>-</Button>
-                                                            <Typography variant="h2" color="primary">{updateNumber}</Typography>
-                                                            <Button onClick={() => setUpdateNumber(updateNumber !== 0 && updateNumber + 1)}>+</Button>
-                                                        </Stack>
-                                                }
-                                                {updateSlot &&
-                                                    <Box>
-                                                        <Button size="small" onClick={handleSlotUpdate}>Update Slot</Button>
-                                                    </Box>
-                                                }
-                                            </Stack>
-
-
-                                        </Grid>
-
-
                                     </Grid>
                                 </Card>
-
                             </Grid>
 
                             <Grid item xs={12}>
                                 <Card sx={{ width: '100%', height: 'auto', borderRadius: '1rem', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px', backgroundColor: '#0000800', p: 2 }}>
-                                    <TableContainer component={Paper}>
-                                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                                            <TableHead>
-                                                <TableRow>
-                                                    <TableCell>Item Name</TableCell>
-                                                    <TableCell align="right">Quantity</TableCell>
-                                                    <TableCell align="right">Status</TableCell>
-                                                    <TableCell align="right">Action</TableCell>
-                                                </TableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                                {rows.map((row) => (
-                                                    <TableRow
-                                                        key={row.name}
-                                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                                    >
-                                                        <TableCell component="th" scope="row">
-                                                            {row.name}
-                                                        </TableCell>
-                                                        <TableCell align="right">{row.calories}</TableCell>
-                                                        <TableCell align="right">{row.fat}</TableCell>
-                                                        <TableCell align="right">
-                                                            <ButtonGroup size="small" aria-label="small button group">
-                                                                <IconButton color="error">
-                                                                    <DeleteIcon />
-                                                                </IconButton>
-                                                                <IconButton color="success">
-                                                                    <CheckIcon />
-                                                                </IconButton>
-                                                            </ButtonGroup>
-                                                        </TableCell>
-                                                    </TableRow>
-                                                ))}
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer>
+                                    <div style={{ height: 400, width: '100%' }}>
+                                        <DataGrid rows={rows} columns={columns} />
+                                    </div>
                                 </Card>
                             </Grid>
                         </Grid>
@@ -243,7 +203,7 @@ function MyReliefCenter() {
                                 <Typography variant="h5" color="initial">Create your Relief Center</Typography>
                             </Grid>
 
-                            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2, p: 3, width: '40vw', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
+                            <Box component="form" sx={{ mt: 2, p: 3, width: '40vw', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
                                 <Grid container spacing={1}>
                                     <Grid item xs={12}>
                                         <TextField
@@ -253,7 +213,7 @@ function MyReliefCenter() {
                                             type="text"
                                             label="Center Name"
                                             name="CenterName"
-                                            value={reliefForm.CenterName}
+                                            value={collectionForm.CenterName}
                                             size="small"
                                             onChange={handleChange}
                                         />
@@ -268,21 +228,7 @@ function MyReliefCenter() {
                                             label="Phone No"
                                             name="Phone"
                                             size="small"
-                                            value={reliefForm.Phone}
-                                            onChange={handleChange}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={12}>
-                                        <TextField
-                                            margin="normal"
-                                            required
-                                            fullWidth
-                                            type="number"
-                                            label="Capacity"
-                                            name="Capacity"
-                                            size="small"
-                                            value={reliefForm.Capacity}
+                                            value={collectionForm.Phone}
                                             onChange={handleChange}
                                         />
                                     </Grid>
@@ -300,39 +246,28 @@ function MyReliefCenter() {
                             </Box>
                         </Grid>
                 }
-                {/* modal */}
+
+                {/* modal for despatching the supply request */}
                 <Modal
-                    // aria-labelledby="transition-modal-title"
-                    // aria-describedby="transition-modal-description"
                     open={open}
                     onClose={handleClose}
-                    closeAfterTransition
-                    BackdropComponent={Backdrop}
-                    BackdropProps={{
-                        timeout: 500,
-                    }}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
                 >
-                    <Fade in={open}>
-                        <Box sx={style}>
-                            <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 3 }}>
-                                <Typography variant="h6" color="primary" >Supply Request</Typography>
-                                <Button variant="contained" size="small">Send</Button>
-                            </Stack>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12} sm={6}>
-                                    <TextField label="Item" variant="outlined" size="small" />
-                                </Grid>
-
-                                <Grid item xs={12} sm={6}>
-                                    <TextField label="Quantity" variant="outlined" size="small" />
-                                </Grid>
-                            </Grid>
-                        </Box>
-                    </Fade>
+                    <Box sx={style}>
+                        <Typography id="modal-modal-title" variant="h6" component="h2">
+                            {modalData.name}
+                        </Typography>
+                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                            {modalData.item}
+                        </Typography>
+                    </Box>
                 </Modal>
+
+
             </Container>
         </>
     )
 }
 
-export default MyReliefCenter
+export default MyCollectionCenter

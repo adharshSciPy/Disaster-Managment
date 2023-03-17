@@ -12,6 +12,7 @@ import NavBar from "./scenes/main/NavBar";
 import SnackBar from "./scenes/main/Snackbar";
 import axios from "axios";
 import MyReliefCenter from "./scenes/volunteer/reliefCenter/MyReliefCenter";
+import MyCollectionCenter from "./scenes/volunteer/collection/MyCollectionCenter"
 
 function App() {
   axios.defaults.baseURL = "http://localhost:5000";
@@ -37,10 +38,11 @@ function App() {
           {/* relief-center */}
           <Route path="relief-center" element={<ReliefCenter />} />
           <Route path="my-relief-center" element={<MyReliefCenter />} />
-          {/* <Route path=":relief-center-page" element={<ReliefCenterPage />} /> */}
+      
 
           {/* collection center */}
           <Route path="collection-center" element={<CollectionCenter />} />
+          <Route path="my-collection-center" element={<MyCollectionCenter />} />
         </Route>
       </Routes>
     </BrowserRouter>

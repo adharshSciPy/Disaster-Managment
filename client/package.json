@@ -6,8 +6,9 @@
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@mui/icons-material": "^5.11.9",
-    "@mui/material": "^5.11.9",
-    "@mui/x-data-grid": "^5.17.23",
+    "@mui/material": "^5.11.13",
+    "@mui/styled-engine-sc": "^5.11.11",
+    "@mui/x-data-grid": "^5.17.26",
     "@mui/x-data-grid-generator": "^5.17.23",
     "@reduxjs/toolkit": "^1.9.1",
     "@testing-library/jest-dom": "^5.16.5",
@@ -21,6 +22,7 @@
     "react-router-dom": "^6.8.1",
     "react-scripts": "5.0.1",
     "react-toastify": "^9.1.1",
+    "styled-components": "^5.3.9",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
