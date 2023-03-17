@@ -51,6 +51,20 @@ const reliefNavItems = [
 ]
 
 
+
+// navItems for user who have collection center role
+const collectionNavItems = [
+  {
+    title: 'My Collection Center',
+    link: 'collection/my-collection-center'
+  },
+  {
+    title: 'All Collection Centers',
+    link: 'volunteer/collection-center'
+  }
+]
+
+
 function DrawerAppBar(props) {
   const naivgate = useNavigate();
   const dispatch = useDispatch();
@@ -105,6 +119,22 @@ function DrawerAppBar(props) {
         {
           role === 'relief' &&
           reliefNavItems.map((item, val) => {
+            return (
+              <ListItem key={val} disablePadding>
+                <ListItemButton
+                  sx={{ textAlign: "center" }}
+                  onClick={() => naivgate(item.link)}
+                >
+                  <ListItemText primary={item.title} />
+                </ListItemButton>
+              </ListItem>
+            )
+          })
+        }
+
+        {
+          role === 'collection' &&
+          collectionNavItems.map((item, val) => {
             return (
               <ListItem key={val} disablePadding>
                 <ListItemButton
@@ -178,6 +208,24 @@ function DrawerAppBar(props) {
                     </Button>
                   </NavLink>
                 ))}
+
+
+              {role === 'collection' &&
+                collectionNavItems.map((item, val) => (
+                  <NavLink
+                    to={item.link}
+                    style={({ isActive }) =>
+                      isActive ? activeStyle : nonActiveStyle
+                    }
+                  >
+                    <Button sx={{ color: "#fff" }}>
+                      {item.title}
+                    </Button>
+                  </NavLink>
+                ))}
+
+
+
               {isAuthenticated && <Button onClick={handleLogout} startIcon={<LogoutIcon />} sx={{ backgroundColor: 'white', color: '#fff', ml: 4 }}>Logout</Button>}
             </Box>
           </Toolbar>
