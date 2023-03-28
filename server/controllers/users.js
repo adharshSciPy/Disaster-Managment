@@ -83,6 +83,7 @@ module.exports = {
             res.status(201).json({
               token,
               role: user.role,
+              userID: user._id,
               message: 'Logged In Succesfully'
             }); 
           }

@@ -8,6 +8,7 @@ import { toast } from 'react-toastify'
 import ButtonGroup from '@mui/material/ButtonGroup';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
+import { useSelector } from 'react-redux';
 
 function MyReliefCenter() {
     // table demo data
@@ -31,7 +32,9 @@ function MyReliefCenter() {
 
     const [reliefCenter, setReliefCenter] = useState(false)
     const [reliefCenterData, setReliefCenterData] = useState([])
-    const userId = '640ebd6f861347e3c197e5d7'
+    const [reliefCenterId, setReliefCenterId] = useState()
+    const userId = useSelector((state) => state.auth.id)
+    console.log('user id' + userId)
 
     // creating relief center 
     const [reliefForm, setReliefForm] = useState({
@@ -52,7 +55,8 @@ function MyReliefCenter() {
             .then((res) => {
                 console.log(res)
                 setReliefCenterData(res.data)
-                setUpdateNumber(res.data[0].Capacity)
+                setReliefCenterId(res.data[0]._id)
+                setUpdateNumber(res.data[0].Capacity - res.data[0].Admission)
                 const dataArr = res.data
                 if (dataArr.length === 0) {
                     setReliefCenter(false)
@@ -76,7 +80,15 @@ function MyReliefCenter() {
     const [updateNumber, setUpdateNumber] = useState()
     const handleSlotUpdate = () => {
         console.log('update slot')
-        !updateSlot ? setSlotUpdate(true) : setSlotUpdate(false)
+        axios.put(`/addadmission/${reliefCenterId}`, {
+            Admission: updateNumber
+        })
+            .then((res) => {
+                console.log(res)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
     }
 
     // submit function of form
@@ -122,10 +134,31 @@ function MyReliefCenter() {
         // fontFamily: 'Poppins sans-serif'
     };
 
+    // modal style
+    const AccomModalstyle = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 500,
+        bgcolor: '#fff',
+        boxShadow: 24,
+        pt: 2,
+        p: 4,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column'
+    };
+
     // modal states
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+
+    const [accomodationModal, setAccomodationModal] = React.useState(false);
+    const handleAccomOpen = () => setAccomodationModal(true);
+    const handleAccomClose = () => setAccomodationModal(false);
     return (
         <>
             <Container maxWidth="lg" sx={{ mt: 6 }}>
@@ -150,43 +183,31 @@ function MyReliefCenter() {
 
                             <Grid item xs={12}>
                                 <Card sx={{ width: '100%', height: '25vh', borderRadius: '1rem', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px', backgroundColor: '#0000800' }}>
-                                    <Grid container alignItems="center" justifyContent="space-between" sx={{ pt: 2 }}>
+                                    <Grid container alignItems="center" justifyContent="space-between">
                                         <Grid item xs={6} sx={{ p: 2 }}>
-                                            <Typography variant="h6" color="initial" sx={{ mb: 3 }}>{reliefCenterData[0].CenterName}</Typography>
+                                            <Typography variant="h6" color="initial" sx={{ mb: 1 }}>{reliefCenterData[0].CenterName}</Typography>
                                             <Stack direction="row" alignItems="center" justifyContent="start" spacing={2}>
                                                 <Box>
-                                                    <Typography variant="body2" color="initial">contact Info: </Typography>
-                                                    <Typography variant="body2" color="initial">location:</Typography>
+                                                    <Typography variant="body2" color="initial">contact Info</Typography>
+                                                    <Typography variant="body2" color="initial">Vaccancy</Typography>
+                                                    <Typography variant="body2" color="initial">location</Typography>
                                                 </Box>
 
                                                 <Box>
                                                     <Typography variant="body2" color="initial">{reliefCenterData[0].Phone}</Typography>
-                                                    <Typography variant="body1" color="primary">Karyavattom</Typography>
+                                                    <Typography variant="body2" color="initial">{reliefCenterData[0].Capacity - reliefCenterData[0].Admission} <span> / </span>{reliefCenterData[0].Capacity}</Typography>
+                                                    <Typography variant="body2" color="primary">Karyavattom</Typography>
                                                 </Box>
                                             </Stack>
                                         </Grid>
 
 
-                                        <Grid item xs={2} sx={{ p: 3 }}>
+                                        <Grid item xs={3} sx={{ p: 3 }}>
                                             <Stack direction="column" alignItems='center' justifyContent="center">
-                                                {
-                                                    !updateSlot ?
-                                                        <Typography variant="h2" color="initial" onDoubleClick={handleSlotUpdate}>{reliefCenterData[0].Capacity}</Typography>
-                                                        : 
-                                                        <Stack direction="row" alignItems="center" justifyContent='center'>
-                                                            <Button onClick={() => setUpdateNumber(updateNumber !== 0 ? updateNumber - 1 : 0)}>-</Button>
-                                                            <Typography variant="h2" color="primary">{updateNumber}</Typography>
-                                                            <Button onClick={() => setUpdateNumber(updateNumber !== 0 && updateNumber + 1)}>+</Button>
-                                                        </Stack>
-                                                }
-                                                {updateSlot &&
-                                                    <Box>
-                                                        <Button size="small" onClick={handleSlotUpdate}>Update Slot</Button>
-                                                    </Box>
-                                                }
+                                                <Button variant="outlined" color="primary" size="small" onClick={() => handleAccomOpen()}>
+                                                    Add Accomodation
+                                                </Button>
                                             </Stack>
-
-
                                         </Grid>
 
 
@@ -238,6 +259,7 @@ function MyReliefCenter() {
                         </Grid>
 
                         :
+                        
                         <Grid container spacing={3} direction="column" alignItems='center' justifyContent="center" sx={{ mt: 3 }}>
                             <Grid item>
                                 <Typography variant="h5" color="initial">Create your Relief Center</Typography>
@@ -327,6 +349,30 @@ function MyReliefCenter() {
                                     <TextField label="Quantity" variant="outlined" size="small" />
                                 </Grid>
                             </Grid>
+                        </Box>
+                    </Fade>
+                </Modal>
+
+                <Modal
+                    open={accomodationModal}
+                    onClose={handleAccomClose}
+                    closeAfterTransition
+                    BackdropComponent={Backdrop}
+                    BackdropProps={{
+                        timeout: 500,
+                    }}
+                >
+                    <Fade in={accomodationModal}>
+                        <Box sx={AccomModalstyle}>
+                            <Typography variant="h6" color="initial">Add Accomodation</Typography>
+                            <Stack direction="row" alignItems="center" justifyContent='center'>
+                                <Button onClick={() => setUpdateNumber(updateNumber !== 0 ? updateNumber - 1 : 0)}>-</Button>
+                                <Typography variant="h2" color="primary">{updateNumber}</Typography>
+                                <Button onClick={() => setUpdateNumber(updateNumber !== 0 && updateNumber + 1)}>+</Button>
+                            </Stack>
+                            <Button variant="outlined" color="primary" size="small" sx={{ mt: 2 }}>
+                                Update
+                            </Button>
                         </Box>
                     </Fade>
                 </Modal>

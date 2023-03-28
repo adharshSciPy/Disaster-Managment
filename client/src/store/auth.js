@@ -6,22 +6,25 @@ export const authSlice = createSlice({
 
   initialState: {
     isAuthenticated: false,
-    role: "",
+    id: "",
   },
   reducers: {
-    setCollectionCenter: (state) => {
+    setCollectionCenter: (state, action) => {
       state.isAuthenticated = true;
       state.role = "collection";
+      state.id = action.payload
     },
 
-    setAdmin: (state) => {
+    setAdmin: (state, action) => {
       state.isAuthenticated = true;
       state.role = "admin";
+      state.id = action.payload
     },
 
-    setReliefCenter: (state) => {
+    setReliefCenter: (state ,action) => {
       state.isAuthenticated = true;
       state.role = "relief";
+      state.id = action.payload
     },
 
     logout: (state) => {

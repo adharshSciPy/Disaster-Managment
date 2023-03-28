@@ -72,13 +72,13 @@ function Login() {
           Cookie.set("Token", res.data.token);
 
           if (res.data.role === "reliefCenter") {
-            dispatch(setReliefCenter());
+            dispatch(setReliefCenter(res.data.userID));
             navigate("/volunteer/relief-center");
           } else if (res.data.role === "admin") {
-            dispatch(setAdmin());
+            dispatch(setAdmin(res.data.userID));
             navigate("/admin");
           } else {
-            dispatch(setCollectionCenter());
+            dispatch(setCollectionCenter(res.data.userID));
             navigate("/volunteer/collection-center");
           }
         })

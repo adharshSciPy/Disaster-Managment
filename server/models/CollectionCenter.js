@@ -13,7 +13,7 @@ const CollectionCenterSchema = new Schema(
     },
     Phone: {
       type: String,
-      required: true,
+      required: true, 
       unique: true,
     }
 },
