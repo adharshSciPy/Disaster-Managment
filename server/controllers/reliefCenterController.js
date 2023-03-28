@@ -87,6 +87,23 @@ module.exports = {
       console.log(error.message);
     }
   },
+  confirmDelivery: async (req, res) => {
+    const id = req.params.id;
+    const { Delivered } = req.body;
+
+    try {
+      const userdata = await ReliefSupply.updateOne({ id }, {
+        $set: {
+          Delivered
+        }
+      });
+      res.status(200).json(userdata)
+
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server Error');
+    }
+  },
 
 
   // confirmReliefSupplyRequest : async (req, res) => {
