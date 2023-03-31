@@ -1,4 +1,4 @@
-  const ReliefCenter = require("../models/reliefCenter");
+const ReliefCenter = require("../models/reliefCenter");
 const ReliefSupply = require("../models/reliefSupply")
 
 module.exports = {
@@ -42,6 +42,7 @@ module.exports = {
   addadmission: async (req, res) => {
     const id = req.params.id;
     const { Admission } = req.body;
+    console.log(Admission)
 
     try {
       const userdata = await ReliefCenter.updateOne({ id }, {
@@ -72,7 +73,6 @@ module.exports = {
   addReliefSupplyRequest: async (req, res) => {
     const { CenterName, Phone, ItemName, Qunatity, Status, AcceptedBy, Delivered } = req.body;
     try {
-      console.log(req.body)
       const result = await ReliefSupply.create({
         CenterName,
         Phone,

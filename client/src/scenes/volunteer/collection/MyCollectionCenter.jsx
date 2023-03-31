@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Box } from '@mui/system'
 import { DataGrid } from '@mui/x-data-grid';
+import { useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
 
 function MyCollectionCenter() {
 
@@ -29,7 +31,7 @@ function MyCollectionCenter() {
 
     const [collectionCenter, setCollectionCenter] = useState(false)
     const [collectionCenterData, setCollectionCenterData] = useState([])
-    const userId = '640ebd6f861347e3c197e5d7'
+    const userId = useSelector((state) => state.auth.id)
 
     // creating relief center 
     const [collectionForm, setCollectionForm] = useState({
@@ -45,7 +47,7 @@ function MyCollectionCenter() {
 
 
     const loadData = () => {
-        axios.get(`/relief/getreliefcenterbyid/${userId}`)
+        axios.get(`/collection/getreliefcenterbyid/${userId}`)
             .then((res) => {
                 console.log(res)
                 setCollectionCenterData(res.data)
@@ -69,32 +71,29 @@ function MyCollectionCenter() {
 
 
     // submit function of form
-    // const handleSubmit = (event) => {
-    //     event.preventDefault();
-    //     console.log(reliefForm);
+    const handleSubmit = (event) => {
+        event.preventDefault();
 
-    //     const form = {
-    //         CenterName: reliefForm.CenterName,
-    //         Capacity: reliefForm.Capacity,
-    //         Phone: reliefForm.Phone,
-    //         InCharge: userId
-    //     };
+        const form = {
+            CenterName: collectionForm.CenterName,
+            Phone: collectionForm.Phone,
+            InCharge: userId
+        };
 
-    //     axios.post('relief/addreliefcenter', form)
-    //         .then((res) => {
-    //             console.log(res);
-    //             toast.success('Relief Center Created');
-    //             setReliefForm({
-    //                 CenterName: '',
-    //                 Phone: '',
-    //                 Capacity: ''
-    //             });
-    //             loadData()
-    //         })
-    //         .catch((err) => {
-    //             console.log(err);
-    //         });
-    // };
+        axios.post('collection/addCollectioncenter', form)
+            .then((res) => {
+                console.log(res);
+                toast.success('Collection Center Created');
+                setCollectionForm({
+                    CenterName: '',
+                    Phone: '',
+                });
+                loadData()
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
 
 
     // datarid
@@ -203,7 +202,7 @@ function MyCollectionCenter() {
                                 <Typography variant="h5" color="initial">Create your Relief Center</Typography>
                             </Grid>
 
-                            <Box component="form" sx={{ mt: 2, p: 3, width: '40vw', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
+                            <Box component="form" sx={{ minWidth: '20rem',  mt: 2, p: 3, width: '40vw', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
                                 <Grid container spacing={1}>
                                     <Grid item xs={12}>
                                         <TextField
@@ -239,8 +238,9 @@ function MyCollectionCenter() {
                                             fullWidth
                                             variant="contained"
                                             sx={{ mt: 3, mb: 2 }}
+                                            onClick={(e) => handleSubmit}
                                         >
-                                            Create Relief Center                                        </Button>
+                                            Create Collection Center                                        </Button>
                                     </Grid>
                                 </Grid>
                             </Box>

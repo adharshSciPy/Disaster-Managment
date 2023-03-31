@@ -3,8 +3,6 @@ const { getReliefCenter,addReliefCenter, addadmission ,getAllReliefCenter, addRe
 
 const router = express.Router();
 
-
-
 router.post("/addreliefcenter",addReliefCenter);
 router.get("/getreliefcenterbyid/:id", getReliefCenter)
 router.put("/addadmission/:id",addadmission)

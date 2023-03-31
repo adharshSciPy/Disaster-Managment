@@ -113,6 +113,7 @@ function Login() {
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
+            minWidth: '20rem'
           }}
         >
           <Typography variant="h6" sx={{ fontWeight: 400 }}>

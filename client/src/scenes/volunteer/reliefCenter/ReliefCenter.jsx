@@ -3,6 +3,9 @@ import { Box, Container } from '@mui/system'
 import { DataGrid } from '@mui/x-data-grid';
 import { Button, Fade, Grid, Modal, Stack, Typography } from '@mui/material';
 import Backdrop from '@mui/material/Backdrop';
+import uuid from "react-uuid";
+import { useState } from 'react';
+import axios from 'axios'
 
 function ReliefCenter() {
 
@@ -24,13 +27,64 @@ function ReliefCenter() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [modalData, setModalData] = React.useState('')
+  const [rows, setRows] = React.useState({});
+  const [output, setOutput] = useState('')
+
+
+  function setRow() {
+    axios
+      .get(`relief/reliefcenters`)
+      .then((res) => {
+        setRows(res.data);
+        console.log(res);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
+
+  React.useEffect(() => {
+    setRow();
+  }, []);
 
 
   // demo data
   const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'centerName', headerName: 'First name', width: 300 },
-    { field: 'location', headerName: 'Last name', width: 300 },
+    { field: "_id", headerName: "Id", width: 300, hideable: false, hide: true },
+    { field: 'CenterName', headerName: 'Center name', width: 300 },
+    { field: 'Phone', headerName: 'Phone no', width: 300 },
+    { field: 'Capacity', headerName: 'Capacity', width: 300 },
+    { field: 'Admission', headerName: 'Admission', width: 300, hideable: false, hide: true },
+    {
+      field: 'Vaccancy',
+      headerName: 'Vaccancy',
+      width: 160,
+      valueGetter: (params: GridValueGetterParams) =>
+        `${params.row.Capacity - params.row.Admission}`,
+      hideable: false, hide: true
+    },
+    {
+      field: 'InCharge',
+      headerName: 'Incharge',
+      width: 160,
+      hideable: false, hide: true
+    },
+
+    // {
+    //   field: 'userName',
+    //   headerName: 'User Name',
+    //   width: 160,
+    //   valueGetter: (params: GridValueGetterParams) => {
+    //     const Incharge = `${params.row.InCharge}`
+    //     axios.get(`/user/getuser/${Incharge}`)
+    //       .then((res) => {
+    //         console.log('userDetails' + JSON.stringify(res.data.firstName))
+    //         setOutput(JSON.stringify(res.data.firstName))
+    //       })
+    //   },
+    //   value: output,
+    // },
+
     {
       field: 'action',
       headerName: 'Action',
@@ -61,18 +115,6 @@ function ReliefCenter() {
     },
   ];
 
-  const rows = [
-    { id: 1, centerName: 'Scipy Relief Center', contactInfo: '+91 8139031923', location: 'karyavattom', capacity: 22 },
-    { id: 2, centerName: 'Lorem Relief Center', contactInfo: '+91 8139031923', location: 'karyavattom', capacity: 22 },
-    { id: 3, centerName: 'Ipsum Relief Center', contactInfo: '+91 8139031923', location: 'karyavattom', capacity: 22 },
-    { id: 4, centerName: 'Carwol Relief Center', contactInfo: '+91 8139031923', location: 'karyavattom', capacity: 22 },
-    { id: 5, centerName: 'Lalasd Relief Center', contactInfo: '+91 8139031923', location: 'karyavattom', capacity: 22 },
-    { id: 6, centerName: 'Reosd Relief Center', contactInfo: '+91 8139031923', location: 'karyavattom', capacity: 22 },
-    { id: 7, centerName: 'Posdf Relief Center', contactInfo: '+91 8139031923', location: 'karyavattom', capacity: 22 },
-    { id: 8, centerName: 'Bavasd Relief Center', contactInfo: '+91 8139031923', location: 'karyavattom', capacity: 22 },
-    { id: 9, centerName: 'Postse Relief Center', contactInfo: '+91 8139031923', location: 'karyavattom', capacity: 22 },
-  ];
-
 
 
   return (
@@ -84,7 +126,13 @@ function ReliefCenter() {
         </Stack>
 
         <Box sx={{ height: '80vh', maxHeight: '70vh', width: '90vw' }}>
-          <DataGrid columns={columns} rows={rows} />
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            pageSize={5}
+            getRowId={(row: any) => uuid()}
+            disableSelectionOnClick
+          />
         </Box>
       </Container>
 
@@ -113,7 +161,7 @@ function ReliefCenter() {
                 <Stack direction="row" alignItems="center" justifyContent="space-between">
                   <Box>
                     <Typography variant="subtitle1" color="initial">
-                      Aswas Relief Center
+                      {modalData.CenterName}
                     </Typography>
                     <Box sx={{ width: '70%' }}>
                       <Typography variant="caption" color="secondary">
@@ -121,20 +169,20 @@ function ReliefCenter() {
                       </Typography>
                     </Box>
                     <Typography variant="caption" color="initial">
-                      +91 8129023910
+                      +91 {modalData.Phone}
                     </Typography>
                   </Box>
 
                   <Box>
                     <Stack direction="row" alignItems="baseLine" justifContent="center">
-                    <Typography variant="h3" color="secondary">
-                      23 
-                    </Typography>
-                    <Typography variant="h6" color="secondary">Slots</Typography>
+                      <Typography variant="h3" color="secondary">
+                        {modalData.Vaccancy}
+                      </Typography>
+                      <Typography variant="h6" color="secondary">Slots</Typography>
                     </Stack>
-                   
-                    <Typography variant="body2" color="primary">
-                      In Charge: Hareesh
+
+                    <Typography variant="body2" color="">
+                      {/* In Charge: {modalData.userName} */}Available
                     </Typography>
                   </Box>
                 </Stack>

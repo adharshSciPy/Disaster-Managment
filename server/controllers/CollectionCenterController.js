@@ -16,8 +16,9 @@ module.exports = {
       console.log(error.message);
     }
   },
-  getAllReliefCenter : async (req,res) => {
 
+  
+  getAllReliefCenter : async (req,res) => {
     try {
       const user = await CollectionCenter.find()
       res.status(200).json(user)

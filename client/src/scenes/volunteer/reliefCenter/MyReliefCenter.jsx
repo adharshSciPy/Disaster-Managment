@@ -56,7 +56,7 @@ function MyReliefCenter() {
                 console.log(res)
                 setReliefCenterData(res.data)
                 setReliefCenterId(res.data[0]._id)
-                setUpdateNumber(res.data[0].Capacity - res.data[0].Admission)
+                setUpdateNumber(res.data[0].Admission)
                 const dataArr = res.data
                 if (dataArr.length === 0) {
                     setReliefCenter(false)
@@ -77,19 +77,24 @@ function MyReliefCenter() {
 
     // update slot
     const [updateSlot, setSlotUpdate] = useState(false)
-    const [updateNumber, setUpdateNumber] = useState()
+    const [updateNumber, setUpdateNumber] = useState(0)
     const handleSlotUpdate = () => {
         console.log('update slot')
-        axios.put(`/addadmission/${reliefCenterId}`, {
+        axios.put(`relief/addadmission/${reliefCenterId}`, {
             Admission: updateNumber
         })
             .then((res) => {
                 console.log(res)
+                loadData()
+                handleAccomClose()
             })
             .catch((err) => {
                 console.log(err)
             })
     }
+
+
+
 
     // submit function of form
     const handleSubmit = (event) => {
@@ -159,6 +164,31 @@ function MyReliefCenter() {
     const [accomodationModal, setAccomodationModal] = React.useState(false);
     const handleAccomOpen = () => setAccomodationModal(true);
     const handleAccomClose = () => setAccomodationModal(false);
+
+
+    // handle supply request
+    const [item, setItem] = useState('')
+    const [quantity, setQuantity] = useState('')
+
+
+    // handle supply request api
+    const handleSupplyRequest = () => {
+        const form = {
+            ItemName: item,
+            Qunatity: quantity,
+            CenterName: reliefCenterData[0].CenterName,
+            Phone: reliefCenterData[0].Phone
+        }
+        axios.post('/relief/addreliefsupplyrequest', form)
+            .then((res) => {
+                console.log(res.data)
+                handleClose()
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
+
     return (
         <>
             <Container maxWidth="lg" sx={{ mt: 6 }}>
@@ -209,11 +239,8 @@ function MyReliefCenter() {
                                                 </Button>
                                             </Stack>
                                         </Grid>
-
-
                                     </Grid>
                                 </Card>
-
                             </Grid>
 
                             <Grid item xs={12}>
@@ -259,7 +286,7 @@ function MyReliefCenter() {
                         </Grid>
 
                         :
-                        
+
                         <Grid container spacing={3} direction="column" alignItems='center' justifyContent="center" sx={{ mt: 3 }}>
                             <Grid item>
                                 <Typography variant="h5" color="initial">Create your Relief Center</Typography>
@@ -336,17 +363,18 @@ function MyReliefCenter() {
                 >
                     <Fade in={open}>
                         <Box sx={style}>
+                            {/* supply request */}
                             <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 3 }}>
                                 <Typography variant="h6" color="primary" >Supply Request</Typography>
-                                <Button variant="contained" size="small">Send</Button>
+                                <Button variant="contained" size="small" onClick={() => handleSupplyRequest()}>Send</Button>
                             </Stack>
                             <Grid container spacing={2}>
                                 <Grid item xs={12} sm={6}>
-                                    <TextField label="Item" variant="outlined" size="small" />
+                                    <TextField label="Item" variant="outlined" size="small" onChange={(e) => setItem(e.target.value)} />
                                 </Grid>
 
                                 <Grid item xs={12} sm={6}>
-                                    <TextField label="Quantity" variant="outlined" size="small" />
+                                    <TextField label="Quantity" variant="outlined" size="small" onChange={(e) => setQuantity(e.target.value)} />
                                 </Grid>
                             </Grid>
                         </Box>
@@ -370,7 +398,7 @@ function MyReliefCenter() {
                                 <Typography variant="h2" color="primary">{updateNumber}</Typography>
                                 <Button onClick={() => setUpdateNumber(updateNumber !== 0 && updateNumber + 1)}>+</Button>
                             </Stack>
-                            <Button variant="outlined" color="primary" size="small" sx={{ mt: 2 }}>
+                            <Button variant="outlined" color="primary" size="small" sx={{ mt: 2 }} onClick={() => handleSlotUpdate()}>
                                 Update
                             </Button>
                         </Box>
