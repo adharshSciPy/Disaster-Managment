@@ -1,5 +1,7 @@
 const CollectionCenter = require("../models/CollectionCenter");
 
+const ReliefSupply = require("../models/reliefSupply")
+
 module.exports = {
   
   addReliefCenter: async (req, res) => {
@@ -26,7 +28,43 @@ module.exports = {
       res.status(500).json({message:error.message})
   }
 
-  }
+  },
+  AcceptDelivery: async (req, res) => {
+    const id = req.params.id;
+    const {Status,AcceptedBy} = req.body;
+
+    try {
+      const data = await ReliefSupply.findByIdAndUpdate(id, {
+        $set: {
+          Status,
+          AcceptedBy
+        }
+      });
+      res.status(200).json(data)
+
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server Error');
+    }
+  },
+  DispatchItem: async (req, res) => {
+    const id = req.params.id;
+    const {Status,DeliveryContact} = req.body;
+
+    try {
+      const data = await ReliefSupply.findByIdAndUpdate(id, {
+        $set: {
+          Status,
+          DeliveryContact
+        }
+      });
+      res.status(200).json(data)  
+
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server Error');
+    }
+  },
   
   }
 

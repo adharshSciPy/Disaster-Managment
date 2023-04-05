@@ -25,11 +25,7 @@ module.exports = {
     console.log(id, "id vanno");
     try {
       const userdata = await ReliefCenter.find({ InCharge: req.params.id });
-      // const data = {
-      //   firstName: userdata.firstName,
-      //   LastName: userdata.lastNameName,
-      //   email: userdata.email,
-      // }
+      console.log(userdata);
       res.status(200).json(userdata)
 
     } catch (error) {
@@ -45,9 +41,9 @@ module.exports = {
     console.log(Admission)
 
     try {
-      const userdata = await ReliefCenter.updateOne({ id }, {
+      const userdata = await ReliefCenter.findByIdAndUpdate(id, {
         $set: {
-          Admission
+          Admission : Admission
         }
       });
       res.status(200).json(userdata)
@@ -71,13 +67,13 @@ module.exports = {
 
 
   addReliefSupplyRequest: async (req, res) => {
-    const { CenterName, Phone, ItemName, Qunatity, Status, AcceptedBy, Delivered } = req.body;
+    const { CenterName, Phone, ItemName, Quantity, Status, AcceptedBy, Delivered } = req.body;
     try {
       const result = await ReliefSupply.create({
         CenterName,
         Phone,
         ItemName,
-        Qunatity,
+        Quantity,
         Status,
         AcceptedBy,
         Delivered
@@ -92,7 +88,7 @@ module.exports = {
     const { Delivered } = req.body;
 
     try {
-      const userdata = await ReliefSupply.updateOne({ id }, {
+      const userdata = await ReliefSupply.findByIdAndUpdate(id, {
         $set: {
           Delivered
         }
@@ -104,11 +100,17 @@ module.exports = {
       res.status(500).send('Server Error');
     }
   },
+  getAllReliefSupplyReqeuest: async (req, res) => {
+
+    try {
+      const user = await ReliefSupply.find()
+      res.status(200).json(user)
+    } catch (error) {
+      res.status(500).json({ message: error.message })
+    }
+  },
 
 
-  // confirmReliefSupplyRequest : async (req, res) => {
-  //   const {}
-  // }
 
 
 

@@ -22,6 +22,7 @@ const ReliefCenterSchema = new Schema(
     }, 
     Admission: {
       type: Number,
+      default : 0
       // required: true
     }
 },

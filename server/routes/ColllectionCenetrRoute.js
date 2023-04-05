@@ -5,10 +5,9 @@ const router = express.Router();
 
 
 router.post("/addCollectioncenter", CollectionCenterController.addReliefCenter);
-// router.get(`/reliefcenter/:id`,UserController.getUser)
-
-
-
+router.get("/getCollectionCenter", CollectionCenterController.getAllReliefCenter);
+router.put("/acceptDelivery/:id",CollectionCenterController.AcceptDelivery);
+router.put("/dispatch/:id",CollectionCenterController.DispatchItem)
 
 
 module.exports = router;
