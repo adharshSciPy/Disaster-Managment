@@ -199,7 +199,7 @@ function MyCollectionCenter() {
                         :
                         <Grid container spacing={3} direction="column" alignItems='center' justifyContent="center" sx={{ mt: 3 }}>
                             <Grid item>
-                                <Typography variant="h5" color="initial">Create your Relief Center</Typography>
+                                <Typography variant="h5" color="initial">Create your Collection Center</Typography>
                             </Grid>
 
                             <Box component="form" sx={{ minWidth: '20rem',  mt: 2, p: 3, width: '40vw', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
@@ -240,7 +240,7 @@ function MyCollectionCenter() {
                                             sx={{ mt: 3, mb: 2 }}
                                             onClick={(e) => handleSubmit}
                                         >
-                                            Create Collection Center                                        </Button>
+                                            Create                                   </Button>
                                     </Grid>
                                 </Grid>
                             </Box>
@@ -262,6 +262,7 @@ function MyCollectionCenter() {
                             {modalData.item}
                         </Typography>
                     </Box>
+
                 </Modal>
 
 
