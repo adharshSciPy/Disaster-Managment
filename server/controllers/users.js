@@ -46,6 +46,7 @@ module.exports = {
   //  ---------------------------------------- //signin method to add a new user//--------------------------- //
   signin: async (req, res) => {
     const { email, password } = req.body;
+    console.log(email,password);
     const { errors, isValid } = SigninValidation(req.body);
 
     try {

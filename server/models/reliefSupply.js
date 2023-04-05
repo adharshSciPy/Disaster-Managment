@@ -5,32 +5,38 @@ const ReliefSupplySchema = new Schema(
     {
         CenterName: {
             type: String,
-            required: true,
+            required: false,
         },
         Phone: {
             type: String,
-            required: true,
+            required: false,
         },
         ItemName:{
             type: String,
-            required: true
+            required: false
         },
-        Qunatity:{
+        Quantity:{
             type: String,
-            required: true
+            required: false
         },
         Status : {
             type : String,
-            required : true,
+            required : false,
             default : "pending"
         },
         AcceptedBy : {
             type: String,
             required : false,
+            default : null
+        },
+        DeliveryContact :{
+            type: String,
+            required : false,
         },
         Delivered :{
             type: Boolean,
-            required : false
+            required : false,
+            default : null
         }
 
     },
