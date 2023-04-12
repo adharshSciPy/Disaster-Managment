@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Box, Container } from '@mui/system'
 import { DataGrid } from '@mui/x-data-grid';
 import { Button, Fade, Grid, Modal, Stack, Typography } from '@mui/material';
 import Backdrop from '@mui/material/Backdrop';
+import axios from 'axios';
+import uuid from "react-uuid";
+
 
 function ReliefCenter() {
 
@@ -24,13 +27,14 @@ function ReliefCenter() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [modalData, setModalData] = React.useState('')
+  const [rows, setRows] = React.useState({})
 
 
   // demo data
   const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'centerName', headerName: 'First name', width: 300 },
-    { field: 'location', headerName: 'Last name', width: 300 },
+    { field: '_id', headerName: 'ID', width: 300 },
+    { field: 'CenterName', headerName: 'First name', width: 300 },
+    { field: 'Phone', headerName: 'Last name', width: 300 },
     {
       field: 'action',
       headerName: 'Action',
@@ -61,18 +65,21 @@ function ReliefCenter() {
     },
   ];
 
-  const rows = [
-    { id: 1, centerName: 'Scipy Relief Center', contactInfo: '+91 8139031923', location: 'karyavattom', capacity: 22 },
-    { id: 2, centerName: 'Lorem Relief Center', contactInfo: '+91 8139031923', location: 'karyavattom', capacity: 22 },
-    { id: 3, centerName: 'Ipsum Relief Center', contactInfo: '+91 8139031923', location: 'karyavattom', capacity: 22 },
-    { id: 4, centerName: 'Carwol Relief Center', contactInfo: '+91 8139031923', location: 'karyavattom', capacity: 22 },
-    { id: 5, centerName: 'Lalasd Relief Center', contactInfo: '+91 8139031923', location: 'karyavattom', capacity: 22 },
-    { id: 6, centerName: 'Reosd Relief Center', contactInfo: '+91 8139031923', location: 'karyavattom', capacity: 22 },
-    { id: 7, centerName: 'Posdf Relief Center', contactInfo: '+91 8139031923', location: 'karyavattom', capacity: 22 },
-    { id: 8, centerName: 'Bavasd Relief Center', contactInfo: '+91 8139031923', location: 'karyavattom', capacity: 22 },
-    { id: 9, centerName: 'Postse Relief Center', contactInfo: '+91 8139031923', location: 'karyavattom', capacity: 22 },
-  ];
+  function loadData() {
+    axios.get('collection/getCollectionCenter')
+      .then((res) => {
+        console.log('consoling collection center' + JSON.stringify(res.data))
+        setRows((res.data))
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
 
+
+  useEffect(() => {
+    loadData()
+  }, [])
 
 
   return (
@@ -84,7 +91,11 @@ function ReliefCenter() {
         </Stack>
 
         <Box sx={{ height: '80vh', maxHeight: '70vh', width: '90vw' }}>
-          <DataGrid columns={columns} rows={rows} />
+          <DataGrid
+            columns={columns}
+            rows={rows}
+            getRowId={(row: any) => uuid()}
+          />
         </Box>
       </Container>
 
@@ -113,7 +124,7 @@ function ReliefCenter() {
                 <Stack direction="row" alignItems="center" justifyContent="space-between">
                   <Box>
                     <Typography variant="subtitle1" color="initial">
-                      Aswas Relief Center
+                      {modalData.CenterName}
                     </Typography>
                     <Box sx={{ width: '70%' }}>
                       <Typography variant="caption" color="secondary">
@@ -127,12 +138,12 @@ function ReliefCenter() {
 
                   <Box>
                     <Stack direction="row" alignItems="baseLine" justifContent="center">
-                    <Typography variant="h3" color="secondary">
-                      23 
-                    </Typography>
-                    <Typography variant="h6" color="secondary">Slots</Typography>
+                      <Typography variant="h3" color="secondary">
+                        23
+                      </Typography>
+                      <Typography variant="h6" color="secondary">Slots</Typography>
                     </Stack>
-                   
+
                     <Typography variant="body2" color="primary">
                       In Charge: Hareesh
                     </Typography>

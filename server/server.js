@@ -23,7 +23,7 @@ app.use(
     origin: ["http://localhost:3000"],
     methods: "GET,POST,PUT,DELETE,OPTIONS",
   })
-  
+
 );
 
 
@@ -31,11 +31,11 @@ app.use(
 //Require application Route modules
 const userRoutes = require("./routes/users");
 const reliefRoutes = require("./routes/reliefCenterRoute")
-const collectionRoutes = require("./routes/ColllectionCenetrRoute")   
+const collectionRoutes = require("./routes/ColllectionCenetrRoute")
 
 app.use("/relief", reliefRoutes)
 app.use("/collection", collectionRoutes)
-app.use("/user", userRoutes);  
+app.use("/user", userRoutes);
 
 
 app.listen(PORT, function () {
