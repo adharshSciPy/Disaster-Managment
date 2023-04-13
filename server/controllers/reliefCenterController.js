@@ -6,7 +6,6 @@ module.exports = {
   addReliefCenter: async (req, res) => {
     const { CenterName, InCharge, Capacity, Phone, Admission } = req.body;
     try {
-      console.log(req.body)
       const result = await ReliefCenter.create({
         CenterName,
         InCharge,
