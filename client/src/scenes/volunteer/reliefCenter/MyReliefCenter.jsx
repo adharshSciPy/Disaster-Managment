@@ -9,26 +9,42 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
 import { useSelector } from 'react-redux';
+import { DataGrid} from '@mui/x-data-grid';
+import uuid from "react-uuid";
 
 function MyReliefCenter() {
+    const [rows, setRows]= useState([])
     // table demo data
-    function createData(
-        name: string,
-        calories: number,
-        fat: number,
-        carbs: number,
-        protein: number,
-    ) {
-        return { name, calories, fat, carbs, protein };
+    const columns = [
+        { field: '_id', headerName: 'ID', width: 70 },
+        { field: 'CenterName', headerName: 'Center Name', width: 250 },
+        { field: 'ItemName', headerName: 'Item', width: 2.00 },
+        { field: 'Quantity', headerName: 'Quantity', width: 130 },
+        {
+            field: 'Status',
+            headerName: 'Status',
+            width: 130,
+            // hide: true
+        }
+    ];
+
+    // setting rows in datagrid
+    function setRow() {
+        axios
+            .get(`relief/getreliefsupply`)
+            .then((res) => {
+                setRows(res.data);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
     }
 
-    const rows = [
-        createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-        createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-        createData('Eclair', 262, 16.0, 24, 6.0),
-        createData('Cupcake', 305, 3.7, 67, 4.3),
-        createData('Gingerbread', 356, 16.0, 49, 3.9),
-    ];
+    React.useEffect(() => {
+        setRow();
+    }, []);
+
+
 
     const [reliefCenter, setReliefCenter] = useState(false)
     const [reliefCenterData, setReliefCenterData] = useState([])
@@ -244,43 +260,24 @@ function MyReliefCenter() {
                             </Grid>
 
                             <Grid item xs={12}>
-                                <Card sx={{ width: '100%', height: 'auto', borderRadius: '1rem', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px', backgroundColor: '#0000800', p: 2 }}>
-                                    <TableContainer component={Paper}>
-                                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                                            <TableHead>
-                                                <TableRow>
-                                                    <TableCell>Item Name</TableCell>
-                                                    <TableCell align="right">Quantity</TableCell>
-                                                    <TableCell align="right">Status</TableCell>
-                                                    <TableCell align="right">Action</TableCell>
-                                                </TableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                                {rows.map((row) => (
-                                                    <TableRow
-                                                        key={row.name}
-                                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                                    >
-                                                        <TableCell component="th" scope="row">
-                                                            {row.name}
-                                                        </TableCell>
-                                                        <TableCell align="right">{row.calories}</TableCell>
-                                                        <TableCell align="right">{row.fat}</TableCell>
-                                                        <TableCell align="right">
-                                                            <ButtonGroup size="small" aria-label="small button group">
-                                                                <IconButton color="error">
-                                                                    <DeleteIcon />
-                                                                </IconButton>
-                                                                <IconButton color="success">
-                                                                    <CheckIcon />
-                                                                </IconButton>
-                                                            </ButtonGroup>
-                                                        </TableCell>
-                                                    </TableRow>
-                                                ))}
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer>
+                                <Card sx={{ width: '100%', height: '80vh', borderRadius: '1rem', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px', backgroundColor: '#0000800', p: 2 }}>
+                                    {/* table */}
+                                    <DataGrid
+                                        rows={rows}
+                                        columns={columns}
+                                        initialState={{
+                                            pagination: {
+                                                paginationModel: {
+                                                    pageSize: 5,
+                                                },
+                                            },
+                                        }}
+                                        pageSizeOptions={[5]}
+                                        checkboxSelection
+                                        disableRowSelectionOnClick
+                                        getRowId={(row: any) => uuid()}
+                                    />
+
                                 </Card>
                             </Grid>
                         </Grid>

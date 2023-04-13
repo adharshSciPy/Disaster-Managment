@@ -7,6 +7,7 @@ import { Box } from '@mui/system'
 import { DataGrid } from '@mui/x-data-grid';
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
+import uuid from "react-uuid";
 
 function MyCollectionCenter() {
 
@@ -27,11 +28,13 @@ function MyCollectionCenter() {
     const [open, setOpen] = React.useState(false);
     const handleClose = () => setOpen(false);
     const [modalData, setModalData] = React.useState('')
+    const [rows, setRows] = React.useState({});
 
 
     const [collectionCenter, setCollectionCenter] = useState(false)
     const [collectionCenterData, setCollectionCenterData] = useState([])
     const userId = useSelector((state) => state.auth.id)
+    console.log(userId)
 
     // creating relief center 
     const [collectionForm, setCollectionForm] = useState({
@@ -47,7 +50,7 @@ function MyCollectionCenter() {
 
 
     const loadData = () => {
-        axios.get(`/collection/getreliefcenterbyid/${userId}`)
+        axios.get(`collection/getCollectionCenterById/${userId}`)
             .then((res) => {
                 console.log(res)
                 setCollectionCenterData(res.data)
@@ -88,7 +91,6 @@ function MyCollectionCenter() {
                     CenterName: '',
                     Phone: '',
                 });
-                loadData()
             })
             .catch((err) => {
                 console.log(err);
@@ -96,10 +98,38 @@ function MyCollectionCenter() {
     };
 
 
-    // datarid
+    // setting rows in datagrid
+    function setRow() {
+        axios
+            .get(`relief/getreliefsupply`)
+            .then((res) => {
+                setRows(res.data);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }
+
+    React.useEffect(() => {
+        setRow();
+    }, []);
+
+
+    // datagrid
     function getStatusButton(status, rowData) {
         const handleAccept = () => {
             // here api to update the status of collection center
+            const data = {
+                Status: 'accepted',
+                AcceptedBy: userId
+            }
+            axios.put(`collection/acceptDelivery/${rowData._id}`, data)
+                .then((res) => {
+                    console.log("updated")
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
         };
 
         const handleDispatch = () => {
@@ -118,12 +148,12 @@ function MyCollectionCenter() {
     }
 
     const columns = [
-        { field: 'id', headerName: 'ID', width: 70 },
-        { field: 'name', headerName: 'Name', width: 150 },
-        { field: 'item', headerName: 'Item', width: 200 },
-        { field: 'quantity', headerName: 'Quantity', width: 130 },
+        { field: '_id', headerName: 'ID', width: 70 },
+        { field: 'CenterName', headerName: 'Center Name', width: 250 },
+        { field: 'ItemName', headerName: 'Item', width: 2.00 },
+        { field: 'Quantity', headerName: 'Quantity', width: 130 },
         {
-            field: 'status',
+            field: 'Status',
             headerName: 'Status',
             width: 130,
             // hide: true
@@ -134,23 +164,26 @@ function MyCollectionCenter() {
             width: 130,
             renderCell: (params) => (
                 <div>
-                    {getStatusButton(params.row.status, params.row)}
+                    {
+                        getStatusButton(params.row.Status, params.row)
+                    }
+
                 </div>
             )
         }
     ];
 
-    const rows = [
-        { id: 1, name: 'Aswas Relif Center', item: 'Clothes', quantity: '8', status: 'pending' },
-        { id: 2, name: 'Jane Smith', item: 'Food', quantity: '2', status: 'accepted' },
-        { id: 3, name: 'Bob Johnson', item: 'Snacks', quantity: '3', status: 'pending' },
-        { id: 4, name: 'Aswas Relif Center', item: 'Clothes', quantity: '10', status: 'pending' },
-        { id: 5, name: 'Jane Smith', item: 'Water', quantity: '8', status: 'accepted' },
-        { id: 6, name: 'Bob Johnson', item: 'Clothes', quantity: '8', status: 'pending' },
-        { id: 7, name: 'Aswas Relif Center', item: 'Fuel', quantity: '10', status: 'pending' },
-        { id: 8, name: 'Jane Smith', item: 'Food', quantity: '8', status: 'accepted' },
-        { id: 9, name: 'Bob Johnson', item: 'Clothes', quantity: '20', status: 'pending' },
-    ];
+    // const rows = [
+    //     { id: 1, name: 'Aswas Relif Center', item: 'Clothes', quantity: '8', status: 'pending' },
+    //     { id: 2, name: 'Jane Smith', item: 'Food', quantity: '2', status: 'accepted' },
+    //     { id: 3, name: 'Bob Johnson', item: 'Snacks', quantity: '3', status: 'pending' },
+    //     { id: 4, name: 'Aswas Relif Center', item: 'Clothes', quantity: '10', status: 'pending' },
+    //     { id: 5, name: 'Jane Smith', item: 'Water', quantity: '8', status: 'accepted' },
+    //     { id: 6, name: 'Bob Johnson', item: 'Clothes', quantity: '8', status: 'pending' },
+    //     { id: 7, name: 'Aswas Relif Center', item: 'Fuel', quantity: '10', status: 'pending' },
+    //     { id: 8, name: 'Jane Smith', item: 'Food', quantity: '8', status: 'accepted' },
+    //     { id: 9, name: 'Bob Johnson', item: 'Clothes', quantity: '20', status: 'pending' },
+    // ];
 
 
     return (
@@ -190,7 +223,7 @@ function MyCollectionCenter() {
                             <Grid item xs={12}>
                                 <Card sx={{ width: '100%', height: 'auto', borderRadius: '1rem', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px', backgroundColor: '#0000800', p: 2 }}>
                                     <div style={{ height: 400, width: '100%' }}>
-                                        <DataGrid rows={rows} columns={columns} />
+                                        <DataGrid rows={rows} columns={columns} getRowId={(row: any) => uuid()} />
                                     </div>
                                 </Card>
                             </Grid>
@@ -199,10 +232,10 @@ function MyCollectionCenter() {
                         :
                         <Grid container spacing={3} direction="column" alignItems='center' justifyContent="center" sx={{ mt: 3 }}>
                             <Grid item>
-                                <Typography variant="h5" color="initial">Create your Relief Center</Typography>
+                                <Typography variant="h5" color="initial">Create your Collection Center</Typography>
                             </Grid>
 
-                            <Box component="form" sx={{ minWidth: '20rem',  mt: 2, p: 3, width: '40vw', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
+                            <Box component="form" sx={{ minWidth: '20rem', mt: 2, p: 3, width: '40vw', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }} onSubmit={handleSubmit}>
                                 <Grid container spacing={1}>
                                     <Grid item xs={12}>
                                         <TextField
@@ -240,7 +273,8 @@ function MyCollectionCenter() {
                                             sx={{ mt: 3, mb: 2 }}
                                             onClick={(e) => handleSubmit}
                                         >
-                                            Create Collection Center                                        </Button>
+                                            Create
+                                        </Button>
                                     </Grid>
                                 </Grid>
                             </Box>
@@ -256,15 +290,14 @@ function MyCollectionCenter() {
                 >
                     <Box sx={style}>
                         <Typography id="modal-modal-title" variant="h6" component="h2">
-                            {modalData.name}
+                            {modalData.ItemName}
                         </Typography>
                         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                            {modalData.item}
+                            {modalData.Qunatity}
                         </Typography>
                     </Box>
+
                 </Modal>
-
-
             </Container>
         </>
     )
