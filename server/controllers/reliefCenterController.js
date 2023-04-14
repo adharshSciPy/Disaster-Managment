@@ -43,7 +43,7 @@ module.exports = {
     try {
       const userdata = await ReliefCenter.findByIdAndUpdate(id, {
         $set: {
-          Admission : Admission
+          Admission: Admission
         }
       });
       res.status(200).json(userdata)

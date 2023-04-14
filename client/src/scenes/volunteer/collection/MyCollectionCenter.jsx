@@ -49,10 +49,10 @@ function MyCollectionCenter() {
 
 
 
-    const loadData = () => {
-        axios.get(`collection/getCollectionCenterById/${userId}`)
+    const loadData = async () => {
+        await axios.get(`collection/getCollectionCenterById/${userId}`)
             .then((res) => {
-                console.log(res)
+                console.log("isID" + JSON.stringify(res.data))
                 setCollectionCenterData(res.data)
                 const dataArr = res.data
                 if (dataArr.length === 0) {
@@ -85,7 +85,7 @@ function MyCollectionCenter() {
 
         axios.post('collection/addCollectioncenter', form)
             .then((res) => {
-                console.log(res);
+                console.log("collectinon form " + res);
                 toast.success('Collection Center Created');
                 setCollectionForm({
                     CenterName: '',
@@ -147,8 +147,17 @@ function MyCollectionCenter() {
         }
     }
 
+    
+
     const columns = [
-        { field: '_id', headerName: 'ID', width: 70 },
+        { field: '_id', headerName: 'ID', width: 70, hideable: 'false', hide: true },
+        {
+            field: 'id',
+            headerName: 'Sl no',
+            filterable: false,
+            renderCell: (index) => index.api.getRowIndex(index.row.code) + 1,
+
+        },
         { field: 'CenterName', headerName: 'Center Name', width: 250 },
         { field: 'ItemName', headerName: 'Item', width: 2.00 },
         { field: 'Quantity', headerName: 'Quantity', width: 130 },
@@ -156,7 +165,6 @@ function MyCollectionCenter() {
             field: 'Status',
             headerName: 'Status',
             width: 130,
-            // hide: true
         },
         {
             field: 'action',
@@ -173,17 +181,6 @@ function MyCollectionCenter() {
         }
     ];
 
-    // const rows = [
-    //     { id: 1, name: 'Aswas Relif Center', item: 'Clothes', quantity: '8', status: 'pending' },
-    //     { id: 2, name: 'Jane Smith', item: 'Food', quantity: '2', status: 'accepted' },
-    //     { id: 3, name: 'Bob Johnson', item: 'Snacks', quantity: '3', status: 'pending' },
-    //     { id: 4, name: 'Aswas Relif Center', item: 'Clothes', quantity: '10', status: 'pending' },
-    //     { id: 5, name: 'Jane Smith', item: 'Water', quantity: '8', status: 'accepted' },
-    //     { id: 6, name: 'Bob Johnson', item: 'Clothes', quantity: '8', status: 'pending' },
-    //     { id: 7, name: 'Aswas Relif Center', item: 'Fuel', quantity: '10', status: 'pending' },
-    //     { id: 8, name: 'Jane Smith', item: 'Food', quantity: '8', status: 'accepted' },
-    //     { id: 9, name: 'Bob Johnson', item: 'Clothes', quantity: '20', status: 'pending' },
-    // ];
 
 
     return (
@@ -202,7 +199,7 @@ function MyCollectionCenter() {
                             <Grid item xs={12}>
                                 <Card sx={{ width: '100%', height: '25vh', borderRadius: '1rem', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px', backgroundColor: '#0000800' }}>
                                     <Grid container alignItems="center" justifyContent="space-between" sx={{ pt: 2 }}>
-                                        <Grid item xs={6} sx={{ p: 2 }}>
+                                        <Grid item xs={6} sx={{ pl: 2 }}  >
                                             <Typography variant="h6" color="initial" sx={{ mb: 3 }}>{collectionCenterData[0].CenterName}</Typography>
                                             <Stack direction="row" alignItems="center" justifyContent="start" spacing={2}>
                                                 <Box>
@@ -230,55 +227,60 @@ function MyCollectionCenter() {
                         </Grid>
 
                         :
-                        <Grid container spacing={3} direction="column" alignItems='center' justifyContent="center" sx={{ mt: 3 }}>
-                            <Grid item>
-                                <Typography variant="h5" color="initial">Create your Collection Center</Typography>
-                            </Grid>
-
-                            <Box component="form" sx={{ minWidth: '20rem', mt: 2, p: 3, width: '40vw', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }} onSubmit={handleSubmit}>
-                                <Grid container spacing={1}>
-                                    <Grid item xs={12}>
-                                        <TextField
-                                            margin="normal"
-                                            required
-                                            fullWidth
-                                            type="text"
-                                            label="Center Name"
-                                            name="CenterName"
-                                            value={collectionForm.CenterName}
-                                            size="small"
-                                            onChange={handleChange}
-                                        />
+                        setInterval(() => {
+                            return (
+                                <Grid container spacing={3} direction="column" alignItems='center' justifyContent="center" sx={{ mt: 3 }}>
+                                    <Grid item>
+                                        <Typography variant="h5" color="initial">Create your Collection Center</Typography>
                                     </Grid>
 
-                                    <Grid item xs={12}>
-                                        <TextField
-                                            margin="normal"
-                                            required
-                                            fullWidth
-                                            type="tel"
-                                            label="Phone No"
-                                            name="Phone"
-                                            size="small"
-                                            value={collectionForm.Phone}
-                                            onChange={handleChange}
-                                        />
-                                    </Grid>
+                                    <Box component="form" sx={{ minWidth: '20rem', mt: 2, p: 3, width: '40vw', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }} onSubmit={handleSubmit}>
+                                        <Grid container spacing={1}>
+                                            <Grid item xs={12}>
+                                                <TextField
+                                                    margin="normal"
+                                                    required
+                                                    fullWidth
+                                                    type="text"
+                                                    label="Center Name"
+                                                    name="CenterName"
+                                                    value={collectionForm.CenterName}
+                                                    size="small"
+                                                    onChange={handleChange}
+                                                />
+                                            </Grid>
 
-                                    <Grid item xs={12}>
-                                        <Button
-                                            type="submit"
-                                            fullWidth
-                                            variant="contained"
-                                            sx={{ mt: 3, mb: 2 }}
-                                            onClick={(e) => handleSubmit}
-                                        >
-                                            Create
-                                        </Button>
-                                    </Grid>
+                                            <Grid item xs={12}>
+                                                <TextField
+                                                    margin="normal"
+                                                    required
+                                                    fullWidth
+                                                    type="tel"
+                                                    label="Phone No"
+                                                    name="Phone"
+                                                    size="small"
+                                                    value={collectionForm.Phone}
+                                                    onChange={handleChange}
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12}>
+                                                <Button
+                                                    type="submit"
+                                                    fullWidth
+                                                    variant="contained"
+                                                    sx={{ mt: 3, mb: 2 }}
+                                                    onClick={(e) => handleSubmit}
+                                                >
+                                                    Create
+                                                </Button>
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
                                 </Grid>
-                            </Box>
-                        </Grid>
+                            )
+                        }, 2000)
+
                 }
 
                 {/* modal for despatching the supply request */}

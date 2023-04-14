@@ -9,11 +9,11 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
 import { useSelector } from 'react-redux';
-import { DataGrid} from '@mui/x-data-grid';
+import { DataGrid } from '@mui/x-data-grid';
 import uuid from "react-uuid";
 
 function MyReliefCenter() {
-    const [rows, setRows]= useState([])
+    const [rows, setRows] = useState([])
     // table demo data
     const columns = [
         { field: '_id', headerName: 'ID', width: 70 },
@@ -66,8 +66,8 @@ function MyReliefCenter() {
 
 
 
-    const loadData = () => {
-        axios.get(`/relief/getreliefcenterbyid/${userId}`)
+    const loadData = async () => {
+        await axios.get(`/relief/getreliefcenterbyid/${userId}`)
             .then((res) => {
                 console.log(res)
                 setReliefCenterData(res.data)
@@ -284,67 +284,73 @@ function MyReliefCenter() {
 
                         :
 
-                        <Grid container spacing={3} direction="column" alignItems='center' justifyContent="center" sx={{ mt: 3 }}>
-                            <Grid item>
-                                <Typography variant="h5" color="initial">Create your Relief Center</Typography>
-                            </Grid>
-
-                            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2, p: 3, width: '40vw', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
-                                <Grid container spacing={1}>
-                                    <Grid item xs={12}>
-                                        <TextField
-                                            margin="normal"
-                                            required
-                                            fullWidth
-                                            type="text"
-                                            label="Center Name"
-                                            name="CenterName"
-                                            value={reliefForm.CenterName}
-                                            size="small"
-                                            onChange={handleChange}
-                                        />
+                        setInterval(() => {
+                            return (
+                                <Grid container spacing={3} direction="column" alignItems='center' justifyContent="center" sx={{ mt: 3 }}>
+                                    <Grid item>
+                                        <Typography variant="h5" color="initial">Create your Relief Center</Typography>
                                     </Grid>
 
-                                    <Grid item xs={12}>
-                                        <TextField
-                                            margin="normal"
-                                            required
-                                            fullWidth
-                                            type="tel"
-                                            label="Phone No"
-                                            name="Phone"
-                                            size="small"
-                                            value={reliefForm.Phone}
-                                            onChange={handleChange}
-                                        />
-                                    </Grid>
+                                    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2, p: 3, width: '40vw', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
+                                        <Grid container spacing={1}>
+                                            <Grid item xs={12}>
+                                                <TextField
+                                                    margin="normal"
+                                                    required
+                                                    fullWidth
+                                                    type="text"
+                                                    label="Center Name"
+                                                    name="CenterName"
+                                                    value={reliefForm.CenterName}
+                                                    size="small"
+                                                    onChange={handleChange}
+                                                />
+                                            </Grid>
 
-                                    <Grid item xs={12}>
-                                        <TextField
-                                            margin="normal"
-                                            required
-                                            fullWidth
-                                            type="number"
-                                            label="Capacity"
-                                            name="Capacity"
-                                            size="small"
-                                            value={reliefForm.Capacity}
-                                            onChange={handleChange}
-                                        />
-                                    </Grid>
+                                            <Grid item xs={12}>
+                                                <TextField
+                                                    margin="normal"
+                                                    required
+                                                    fullWidth
+                                                    type="tel"
+                                                    label="Phone No"
+                                                    name="Phone"
+                                                    size="small"
+                                                    value={reliefForm.Phone}
+                                                    onChange={handleChange}
+                                                />
+                                            </Grid>
 
-                                    <Grid item xs={12}>
-                                        <Button
-                                            type="submit"
-                                            fullWidth
-                                            variant="contained"
-                                            sx={{ mt: 3, mb: 2 }}
-                                        >
-                                            Create Relief Center                                        </Button>
-                                    </Grid>
+                                            <Grid item xs={12}>
+                                                <TextField
+                                                    margin="normal"
+                                                    required
+                                                    fullWidth
+                                                    type="number"
+                                                    label="Capacity"
+                                                    name="Capacity"
+                                                    size="small"
+                                                    value={reliefForm.Capacity}
+                                                    onChange={handleChange}
+                                                />
+                                            </Grid>
+
+                                            <Grid item xs={12}>
+                                                <Button
+                                                    type="submit"
+                                                    fullWidth
+                                                    variant="contained"
+                                                    sx={{ mt: 3, mb: 2 }}
+                                                >
+                                                    Create Relief Center
+                                                </Button>
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
                                 </Grid>
-                            </Box>
-                        </Grid>
+                            )
+                        }, 1000)
+
                 }
                 {/* modal */}
                 <Modal
