@@ -1,5 +1,5 @@
 const express = require("express");
-const { getReliefCenter,addReliefCenter, addadmission ,getAllReliefCenter, addReliefSupplyRequest, confirmDelivery, getAllReliefSupplyReqeuest } = require("../controllers/reliefCenterController");
+const { getReliefCenter,addReliefCenter, addadmission ,getAllReliefCenter, addReliefSupplyRequest, confirmDelivery, getAllReliefSupplyReqeuest, getReliefSupplyReqeuestbyCreator } = require("../controllers/reliefCenterController");
 
 const router = express.Router();
 
@@ -10,6 +10,7 @@ router.get("/reliefcenters",getAllReliefCenter)
 router.post("/addreliefsupplyrequest",addReliefSupplyRequest)
 router.put("/confirmdelivery/:id",confirmDelivery)
 router.get("/getreliefsupply",getAllReliefSupplyReqeuest)
+router.get("/getSupplyReqbyCreator/:id",getReliefSupplyReqeuestbyCreator)
 
 
 module.exports = router;

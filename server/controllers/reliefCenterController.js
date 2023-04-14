@@ -6,7 +6,6 @@ module.exports = {
   addReliefCenter: async (req, res) => {
     const { CenterName, InCharge, Capacity, Phone, Admission } = req.body;
     try {
-      console.log(req.body)
       const result = await ReliefCenter.create({
         CenterName,
         InCharge,
@@ -67,7 +66,7 @@ module.exports = {
 
 
   addReliefSupplyRequest: async (req, res) => {
-    const { CenterName, Phone, ItemName, Quantity, Status, AcceptedBy, Delivered } = req.body;
+    const { CenterName, Phone, ItemName, Quantity, Status, AcceptedBy, Delivered,Requester } = req.body;
     try {
       const result = await ReliefSupply.create({
         CenterName,
@@ -76,7 +75,8 @@ module.exports = {
         Quantity,
         Status,
         AcceptedBy,
-        Delivered
+        Delivered,
+        Requester
       });
       res.status(201).json({ message: "Relief Supply Request Sent" });
     } catch (error) {
@@ -109,6 +109,17 @@ module.exports = {
       res.status(500).json({ message: error.message })
     }
   },
+  getReliefSupplyReqeuestbyCreator: async (req, res) => {
+    const id = req.params.id;
+
+    try {
+      const user = await ReliefSupply.find({Requester:id})
+      res.status(200).json(user)
+    } catch (error) {
+      res.status(500).json({ message: error.message })
+    }
+  },
+
 
 
 

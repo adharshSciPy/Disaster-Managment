@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import LandingPage from "./scenes/main/LandingPage";
+import WeatherApp from "./scenes/main/LandingPage";
+import FloodPredict from "./scenes/js/App";
 import Register from "./scenes/main/Register";
 import Login from "./scenes/main/Login";
 import AdminHome from "./scenes/admin/AdminHome";
@@ -13,6 +14,7 @@ import SnackBar from "./scenes/main/Snackbar";
 import axios from "axios";
 import MyReliefCenter from "./scenes/volunteer/reliefCenter/MyReliefCenter";
 import MyCollectionCenter from "./scenes/volunteer/collection/MyCollectionCenter"
+import WTA from "./scenes/main/LandingPage";
 
 function App() {
   axios.defaults.baseURL = "http://localhost:5000";
@@ -23,7 +25,7 @@ function App() {
       <NavBar />
       <SnackBar />
       <Routes>
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/" element={<FloodPredict/>} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
 
