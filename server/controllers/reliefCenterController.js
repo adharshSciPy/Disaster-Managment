@@ -72,6 +72,7 @@ module.exports = {
         CenterName,
         Phone,
         ItemName,
+        Address,
         Quantity,
         Status,
         AcceptedBy,
@@ -103,7 +104,7 @@ module.exports = {
   getAllReliefSupplyReqeuest: async (req, res) => {
 
     try {
-      const user = await ReliefSupply.find()
+      const user = await ReliefSupply.find({Status:'pending'})
       res.status(200).json(user)
     } catch (error) {
       res.status(500).json({ message: error.message })
@@ -114,6 +115,16 @@ module.exports = {
 
     try {
       const user = await ReliefSupply.find({Requester:id})
+      res.status(200).json(user)
+    } catch (error) {
+      res.status(500).json({ message: error.message })
+    }
+  },
+  
+  getReliefSupplyReqeuestAccepted: async (req, res) => {
+    const id = req.params.id;
+    try {
+      const user = await ReliefSupply.find({Status:'accepted',AcceptedBy:id})
       res.status(200).json(user)
     } catch (error) {
       res.status(500).json({ message: error.message })

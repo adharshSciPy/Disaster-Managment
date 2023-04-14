@@ -1,5 +1,5 @@
 const express = require("express");
-const { getReliefCenter,addReliefCenter, addadmission ,getAllReliefCenter, addReliefSupplyRequest, confirmDelivery, getAllReliefSupplyReqeuest, getReliefSupplyReqeuestbyCreator } = require("../controllers/reliefCenterController");
+const { getReliefCenter,addReliefCenter,getReliefSupplyReqeuestAccepted, addadmission ,getAllReliefCenter, addReliefSupplyRequest, confirmDelivery, getAllReliefSupplyReqeuest, getReliefSupplyReqeuestbyCreator } = require("../controllers/reliefCenterController");
 
 const router = express.Router();
 
@@ -11,6 +11,7 @@ router.post("/addreliefsupplyrequest",addReliefSupplyRequest)
 router.put("/confirmdelivery/:id",confirmDelivery)
 router.get("/getreliefsupply",getAllReliefSupplyReqeuest)
 router.get("/getSupplyReqbyCreator/:id",getReliefSupplyReqeuestbyCreator)
+router.get("/getSupplyReqbyAccepted/:id",getReliefSupplyReqeuestAccepted)
 
 
 module.exports = router;

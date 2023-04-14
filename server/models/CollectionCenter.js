@@ -15,6 +15,10 @@ const CollectionCenterSchema = new Schema(
       type: String,
       required: true, 
       unique: true,
+    },
+    Address:{
+      type: String,
+      required: true
     }
 },
   

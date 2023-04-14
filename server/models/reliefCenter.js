@@ -17,13 +17,16 @@ const ReliefCenterSchema = new Schema(
     },
     Phone: {
       type: String,
-      required: true
-      
+      required: true 
     }, 
     Admission: {
       type: Number,
       default : 0
       // required: true
+    },
+    Address:{
+      type: String,
+      required: true
     }
 },
   
