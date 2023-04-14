@@ -5,12 +5,13 @@ const ReliefSupply = require("../models/reliefSupply")
 module.exports = {
 
   addReliefCenter: async (req, res) => {
-    const { CenterName, InCharge, AccomdationCapacity, Phone, Admission } = req.body;
+    const { CenterName, InCharge, Phone, Address } = req.body;
     try {
       const result = await CollectionCenter.create({
         CenterName,
         InCharge,
         Phone,
+        Address
       });
       res.status(201).json({ message: "Collection added with success" });
 
