@@ -146,8 +146,6 @@ class WTA extends React.Component {
             }
           </div>
         </section>
-
-     
       </div> // app
 
     );

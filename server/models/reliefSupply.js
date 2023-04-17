@@ -33,11 +33,6 @@ const ReliefSupplySchema = new Schema(
             type: String,
             required : false,
         },
-        Delivered :{
-            type: Boolean,
-            required : false,
-            default : null
-        },
         Requester :{
             type : String,
             required : false

@@ -4,14 +4,15 @@ const ReliefSupply = require("../models/reliefSupply")
 module.exports = {
 
   addReliefCenter: async (req, res) => {
-    const { CenterName, InCharge, Capacity, Phone, Admission } = req.body;
+    const { CenterName, Address, InCharge, Capacity, Phone, Admission } = req.body;
     try {
       const result = await ReliefCenter.create({
         CenterName,
         InCharge,
         Phone,
         Capacity,
-        Admission
+        Admission,
+        Address
       });
       res.status(201).json({ message: "Relief Center added with success" });
     } catch (error) {
@@ -66,13 +67,12 @@ module.exports = {
 
 
   addReliefSupplyRequest: async (req, res) => {
-    const { CenterName, Phone, ItemName, Quantity, Status, AcceptedBy, Delivered,Requester } = req.body;
+    const { CenterName, Phone, ItemName, Quantity, Status, AcceptedBy, Delivered, Requester } = req.body;
     try {
       const result = await ReliefSupply.create({
         CenterName,
         Phone,
         ItemName,
-        Address,
         Quantity,
         Status,
         AcceptedBy,
@@ -86,12 +86,11 @@ module.exports = {
   },
   confirmDelivery: async (req, res) => {
     const id = req.params.id;
-    const { Delivered } = req.body;
 
     try {
       const userdata = await ReliefSupply.findByIdAndUpdate(id, {
         $set: {
-          Delivered
+          Status : 'delivered'
         }
       });
       res.status(200).json(userdata)
@@ -104,7 +103,7 @@ module.exports = {
   getAllReliefSupplyReqeuest: async (req, res) => {
 
     try {
-      const user = await ReliefSupply.find({Status:'pending'})
+      const user = await ReliefSupply.find({ Status: 'pending' })
       res.status(200).json(user)
     } catch (error) {
       res.status(500).json({ message: error.message })
@@ -114,17 +113,17 @@ module.exports = {
     const id = req.params.id;
 
     try {
-      const user = await ReliefSupply.find({Requester:id})
+      const user = await ReliefSupply.find({ Requester: id })
       res.status(200).json(user)
     } catch (error) {
       res.status(500).json({ message: error.message })
     }
   },
-  
+
   getReliefSupplyReqeuestAccepted: async (req, res) => {
     const id = req.params.id;
     try {
-      const user = await ReliefSupply.find({Status:'accepted',AcceptedBy:id})
+      const user = await ReliefSupply.find({ Status: 'accepted', AcceptedBy: id })
       res.status(200).json(user)
     } catch (error) {
       res.status(500).json({ message: error.message })

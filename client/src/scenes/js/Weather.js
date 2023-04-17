@@ -70,7 +70,7 @@ export default function Weather(props) {
         <form className="search row" onSubmit={handleSubmit}>
           <input
             type="search"
-            className="col-12 col-lg-8 form-control search-input "
+            className="col-12 col-lg-8 form-control search-input"
             placeholder="Enter a city..."
             onChange={handleChange}
           />

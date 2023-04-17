@@ -32,12 +32,13 @@ module.exports = {
   },
   AcceptDelivery: async (req, res) => {
     const id = req.params.id;
-    const { Status, AcceptedBy } = req.body;
+    const { AcceptedBy } = req.body;
+    console.log('accept' + AcceptedBy)
 
     try {
       const data = await ReliefSupply.findByIdAndUpdate(id, {
         $set: {
-          Status,
+          Status: 'accepted',
           AcceptedBy
         }
       });
@@ -50,12 +51,12 @@ module.exports = {
   },
   DispatchItem: async (req, res) => {
     const id = req.params.id;
-    const { Status, DeliveryContact } = req.body;
+    const { DeliveryContact } = req.body;
 
     try {
       const data = await ReliefSupply.findByIdAndUpdate(id, {
         $set: {
-          Status,
+          Status: 'dispatched',
           DeliveryContact
         }
       });

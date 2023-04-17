@@ -14,24 +14,63 @@ import uuid from "react-uuid";
 
 function MyReliefCenter() {
     const [rows, setRows] = useState([])
+
+
+
+    function getStatusButton(status) {
+        const delivery = () => {
+            console.log('id' + status._id)
+            axios.put(`relief/confirmdelivery/${status._id}`)
+                .then((res) => console.log(res))
+                .catch((err) => console.log(err))
+        }
+        switch (status.Status) {
+            case 'dispatched':
+                return <Button variant="outlined" size="small" color="info" onClick={() => delivery()}>Confirm</Button>;
+            default:
+                return '';
+        }
+    }
     // table demo data
     const columns = [
         { field: '_id', headerName: 'ID', width: 70 },
-        { field: 'CenterName', headerName: 'Center Name', width: 250 },
-        { field: 'ItemName', headerName: 'Item', width: 2.00 },
+        { field: 'CenterName', headerName: 'Center Name', width: 200 },
+        { field: 'ItemName', headerName: 'Item', width: 300 },
         { field: 'Quantity', headerName: 'Quantity', width: 130 },
+        { field: 'isDisabled', headerName: 'Checkbox', hide: true, selectable: false },
         {
             field: 'Status',
             headerName: 'Status',
-            width: 130,
+            width: 150,
             // hide: true
-        }
+        },
+        {
+            field: 'confirm',
+            headerName: 'Action',
+            width: 200,
+            renderCell: (params) => (
+                <div>
+                    {
+                        getStatusButton(params.row)
+                    }
+
+                </div>
+            )
+        },
+
     ];
+
+    const [reliefCenter, setReliefCenter] = useState(false)
+    const [reliefCenterData, setReliefCenterData] = useState([])
+    const [reliefCenterId, setReliefCenterId] = useState()
+    const userId = useSelector((state) => state.auth.id)
+    console.log('user id' + userId)
+
 
     // setting rows in datagrid
     function setRow() {
         axios
-            .get(`relief/getreliefsupply`)
+            .get(`relief/getSupplyReqbyCreator/${userId}`)
             .then((res) => {
                 setRows(res.data);
             })
@@ -44,19 +83,12 @@ function MyReliefCenter() {
         setRow();
     }, []);
 
-
-
-    const [reliefCenter, setReliefCenter] = useState(false)
-    const [reliefCenterData, setReliefCenterData] = useState([])
-    const [reliefCenterId, setReliefCenterId] = useState()
-    const userId = useSelector((state) => state.auth.id)
-    console.log('user id' + userId)
-
     // creating relief center 
     const [reliefForm, setReliefForm] = useState({
         CenterName: '',
         Phone: '',
         Capacity: '',
+        Address: ''
     });
 
     const handleChange = (event) => {
@@ -69,7 +101,7 @@ function MyReliefCenter() {
     const loadData = async () => {
         await axios.get(`/relief/getreliefcenterbyid/${userId}`)
             .then((res) => {
-                console.log(res)
+                console.log(res.data)
                 setReliefCenterData(res.data)
                 setReliefCenterId(res.data[0]._id)
                 setUpdateNumber(res.data[0].Admission)
@@ -121,6 +153,7 @@ function MyReliefCenter() {
             CenterName: reliefForm.CenterName,
             Capacity: reliefForm.Capacity,
             Phone: reliefForm.Phone,
+            Address: reliefForm.Address,
             InCharge: userId
         };
 
@@ -131,7 +164,8 @@ function MyReliefCenter() {
                 setReliefForm({
                     CenterName: '',
                     Phone: '',
-                    Capacity: ''
+                    Capacity: '',
+                    Address: ''
                 });
                 loadData()
             })
@@ -191,14 +225,18 @@ function MyReliefCenter() {
     const handleSupplyRequest = () => {
         const form = {
             ItemName: item,
-            Qunatity: quantity,
+            Quantity: quantity,
             CenterName: reliefCenterData[0].CenterName,
-            Phone: reliefCenterData[0].Phone
+            Phone: reliefCenterData[0].Phone,
+            Requester: userId
         }
         axios.post('/relief/addreliefsupplyrequest', form)
             .then((res) => {
+                console.log(form)
                 console.log(res.data)
                 handleClose()
+                toast.success('Request Submitted')
+                setRow();
             })
             .catch((err) => {
                 console.log(err)
@@ -207,7 +245,7 @@ function MyReliefCenter() {
 
     return (
         <>
-            <Container maxWidth="lg" sx={{ mt: 6 }}>
+            <Container maxWidth="lg" sx={{ mt: 2 }}>
                 {
                     reliefCenter ?
                         <Grid container spacing={2} alignItems="center" justifyContent="space-between" >
@@ -273,9 +311,8 @@ function MyReliefCenter() {
                                             },
                                         }}
                                         pageSizeOptions={[5]}
-                                        checkboxSelection
-                                        disableRowSelectionOnClick
                                         getRowId={(row: any) => uuid()}
+
                                     />
 
                                 </Card>
@@ -283,79 +320,90 @@ function MyReliefCenter() {
                         </Grid>
 
                         :
+                        <Grid container spacing={3} direction="column" alignItems='center' justifyContent="center" sx={{ mt: 3 }}>
+                            <Grid item>
+                                <Typography variant="h5" color="initial">Create your Relief Center</Typography>
+                            </Grid>
 
-                        setInterval(() => {
-                            return (
-                                <Grid container spacing={3} direction="column" alignItems='center' justifyContent="center" sx={{ mt: 3 }}>
-                                    <Grid item>
-                                        <Typography variant="h5" color="initial">Create your Relief Center</Typography>
+                            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2, p: 3, width: '40vw', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
+                                <Grid container spacing={1}>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            margin="normal"
+                                            required
+                                            fullWidth
+                                            type="text"
+                                            label="Center Name"
+                                            name="CenterName"
+                                            value={reliefForm.CenterName}
+                                            size="small"
+                                            onChange={handleChange}
+                                        />
                                     </Grid>
 
-                                    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2, p: 3, width: '40vw', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
-                                        <Grid container spacing={1}>
-                                            <Grid item xs={12}>
-                                                <TextField
-                                                    margin="normal"
-                                                    required
-                                                    fullWidth
-                                                    type="text"
-                                                    label="Center Name"
-                                                    name="CenterName"
-                                                    value={reliefForm.CenterName}
-                                                    size="small"
-                                                    onChange={handleChange}
-                                                />
-                                            </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            margin="normal"
+                                            required
+                                            fullWidth
+                                            type="tel"
+                                            label="Phone No"
+                                            name="Phone"
+                                            size="small"
+                                            value={reliefForm.Phone}
+                                            onChange={handleChange}
+                                        />
+                                    </Grid>
 
-                                            <Grid item xs={12}>
-                                                <TextField
-                                                    margin="normal"
-                                                    required
-                                                    fullWidth
-                                                    type="tel"
-                                                    label="Phone No"
-                                                    name="Phone"
-                                                    size="small"
-                                                    value={reliefForm.Phone}
-                                                    onChange={handleChange}
-                                                />
-                                            </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            margin="normal"
+                                            required
+                                            fullWidth
+                                            type="number"
+                                            label="Capacity"
+                                            name="Capacity"
+                                            size="small"
+                                            value={reliefForm.Capacity}
+                                            onChange={handleChange}
+                                        />
+                                    </Grid>
 
-                                            <Grid item xs={12}>
-                                                <TextField
-                                                    margin="normal"
-                                                    required
-                                                    fullWidth
-                                                    type="number"
-                                                    label="Capacity"
-                                                    name="Capacity"
-                                                    size="small"
-                                                    value={reliefForm.Capacity}
-                                                    onChange={handleChange}
-                                                />
-                                            </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            margin="normal"
+                                            required
+                                            fullWidth
+                                            type="text"
+                                            label="Address"
+                                            name="Address"
+                                            size="small"
+                                            value={reliefForm.Address}
+                                            onChange={handleChange}
+                                        />
+                                    </Grid>
 
-                                            <Grid item xs={12}>
-                                                <Button
-                                                    type="submit"
-                                                    fullWidth
-                                                    variant="contained"
-                                                    sx={{ mt: 3, mb: 2 }}
-                                                >
-                                                    Create Relief Center
-                                                </Button>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
+                                    <Grid item xs={12}>
+                                        <Button
+                                            type="submit"
+                                            fullWidth
+                                            variant="contained"
+                                            sx={{ mt: 3, mb: 2 }}
+                                        >
+                                            Create Relief Center
+                                        </Button>
+                                    </Grid>
                                 </Grid>
-                            )
-                        }, 1000)
+                            </Box>
+                        </Grid>
+
+
 
                 }
+
+
                 {/* modal */}
                 <Modal
-                    // aria-labelledby="transition-modal-title"
-                    // aria-describedby="transition-modal-description"
                     open={open}
                     onClose={handleClose}
                     closeAfterTransition
