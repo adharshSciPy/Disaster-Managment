@@ -8,6 +8,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import uuid from "react-uuid";
+import Badge from '@mui/material/Badge';
 
 function MyCollectionCenter() {
 
@@ -244,7 +245,7 @@ function MyCollectionCenter() {
 
     return (
         <>
-            <Container maxWidth="lg" sx={{ mt: 6 }}>
+            <Container maxWidth="lg" sx={{ mt: '-4rem' }}>
                 {
                     collectionCenter ?
                         <Grid container spacing={2} alignItems="center" justifyContent="space-between" >
@@ -256,19 +257,19 @@ function MyCollectionCenter() {
 
 
                             <Grid item xs={12}>
-                                <Card sx={{ width: '100%', height: '25vh', borderRadius: '1rem', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px', backgroundColor: '#0000800' }}>
-                                    <Grid container alignItems="center" justifyContent="space-between" sx={{ pt: 2 }}>
+                                <Card sx={{ width: '100%', height: '20vh', borderRadius: '1rem', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px', backgroundColor: '#0000800', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Grid container alignItems="center" justifyContent="space-between">
                                         <Grid item xs={6} sx={{ pl: 2 }}  >
-                                            <Typography variant="h6" color="initial" sx={{ mb: 3 }}>{collectionCenterData[0].CenterName}</Typography>
+                                            <Typography variant="h6" color="initial" sx={{ mb: 1 }}>{collectionCenterData[0].CenterName}</Typography>
                                             <Stack direction="row" alignItems="center" justifyContent="start" spacing={2}>
                                                 <Box>
                                                     <Typography variant="body2" color="initial">contact Info: </Typography>
-                                                    <Typography variant="body2" color="initial">location:</Typography>
+                                                    <Typography variant="body2" color="initial">Address:</Typography>
                                                 </Box>
 
                                                 <Box>
                                                     <Typography variant="body2" color="initial">{collectionCenterData[0].Phone}</Typography>
-                                                    <Typography variant="body1" color="primary">Karyavattom</Typography>
+                                                    <Typography variant="body1" color="primary">{collectionCenterData[0].Address}</Typography>
                                                 </Box>
                                             </Stack>
                                         </Grid>
@@ -282,10 +283,19 @@ function MyCollectionCenter() {
                                 </Typography>
                             </Grid>
 
-
-                            <Grid item sx={6}>
-                                <Button variant='outlined' onClick={() => table ? setTable(false) : setTable(true)}>Switch Table</Button>
-                            </Grid>
+                            {
+                                (disRows.length === 0 || !table) ? (
+                                    <Grid item sx={6}>
+                                        <Button variant='outlined' onClick={() => table ? setTable(false) : setTable(true)}>Switch {table ? 'Accepted Items' : 'New Requests'}</Button>
+                                    </Grid>
+                                )
+                                    :
+                                    (
+                                        <Grid item sx={6}>
+                                            <Badge badgeContent={table && disRows.length} color="primary"> <Button variant='outlined' onClick={() => table ? setTable(false) : setTable(true)}>Switch {table ? 'Accepted Items' : 'New Requests'}</Button></Badge>
+                                        </Grid>
+                                    )
+                            }
 
                             {
                                 table ?

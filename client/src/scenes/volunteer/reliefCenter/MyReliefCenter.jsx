@@ -104,7 +104,6 @@ function MyReliefCenter() {
                 console.log(res.data)
                 setReliefCenterData(res.data)
                 setReliefCenterId(res.data[0]._id)
-                setUpdateNumber(res.data[0].Admission)
                 const dataArr = res.data
                 if (dataArr.length === 0) {
                     setReliefCenter(false)
@@ -126,15 +125,37 @@ function MyReliefCenter() {
     // update slot
     const [updateSlot, setSlotUpdate] = useState(false)
     const [updateNumber, setUpdateNumber] = useState(0)
-    const handleSlotUpdate = () => {
-        console.log('update slot')
+    const [IncrementNumber, setIncrementNumber] = useState(0)
+    const [DecrementNumber, setDecrementNumber] = useState(0)
+
+    const handleIncrement = () => {
+        console.log('handle increment slot')
+        // const val = ((reliefCenterData[0].Capacity - reliefCenterData[0].Admission) - updateNumber)
+        setIncrementNumber((reliefCenterData[0].Capacity - reliefCenterData[0].Admission) - updateNumber)
+        axios.put(`relief/addadmission/${reliefCenterId}`, {
+            Admission: IncrementNumber
+        })
+            .then((res) => {
+                console.log(res)
+                loadData()
+                setSlotUpdate(0)
+                handleIncModalClose()
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
+
+
+    const handleDecrement = () => {
+        console.log('handle decrement slot')
         axios.put(`relief/addadmission/${reliefCenterId}`, {
             Admission: updateNumber
         })
             .then((res) => {
                 console.log(res)
                 loadData()
-                handleAccomClose()
+                handleDecModalClose()
             })
             .catch((err) => {
                 console.log(err)
@@ -155,7 +176,7 @@ function MyReliefCenter() {
             Phone: reliefForm.Phone,
             Address: reliefForm.Address,
             InCharge: userId
-        };
+        }
 
         axios.post('relief/addreliefcenter', form)
             .then((res) => {
@@ -211,10 +232,19 @@ function MyReliefCenter() {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    const [accomodationModal, setAccomodationModal] = React.useState(false);
-    const handleAccomOpen = () => setAccomodationModal(true);
-    const handleAccomClose = () => setAccomodationModal(false);
+    const [accoIncModal, setAccoIncModal] = React.useState(false);
+    const [accoDecModal, setAccoDecModal] = React.useState(false);
 
+    const handleIncModal = () => setAccoIncModal(true);
+    const handleIncModalClose = () => {
+        setAccoIncModal(false);
+        setUpdateNumber(0)
+    };
+    const handleDecModal = () => setAccoDecModal(true);
+    const handleDecModalClose = () => {
+        setAccoDecModal(false);
+        setUpdateNumber(0)
+    };
 
     // handle supply request
     const [item, setItem] = useState('')
@@ -245,10 +275,10 @@ function MyReliefCenter() {
 
     return (
         <>
-            <Container maxWidth="lg" sx={{ mt: 2 }}>
+            <Container maxWidth="lg">
                 {
                     reliefCenter ?
-                        <Grid container spacing={2} alignItems="center" justifyContent="space-between" >
+                        <Grid container spacing={2} sx={{ mt: '-3rem', display: 'flex', alignItems: "center", justifyContent: "space-between" }}>
                             <Grid item sx={6}>
                                 <Typography variant="h6" color="primary" sx={{ fontWeight: 600, fontSize: '15px' }}>
                                     My Relief Center
@@ -266,31 +296,43 @@ function MyReliefCenter() {
 
 
                             <Grid item xs={12}>
-                                <Card sx={{ width: '100%', height: '25vh', borderRadius: '1rem', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px', backgroundColor: '#0000800' }}>
-                                    <Grid container alignItems="center" justifyContent="space-between">
-                                        <Grid item xs={6} sx={{ p: 2 }}>
+                                <Card sx={{ width: '100%', height: '20vh', borderRadius: '1rem', boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px', backgroundColor: '#0000800', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Grid container alignItems="center" justifyContent="space-between" sx={{ p: 2 }}>
+                                        <Grid item xs={6}  >
                                             <Typography variant="h6" color="initial" sx={{ mb: 1 }}>{reliefCenterData[0].CenterName}</Typography>
                                             <Stack direction="row" alignItems="center" justifyContent="start" spacing={2}>
                                                 <Box>
                                                     <Typography variant="body2" color="initial">contact Info</Typography>
                                                     <Typography variant="body2" color="initial">Vaccancy</Typography>
-                                                    <Typography variant="body2" color="initial">location</Typography>
+                                                    <Typography variant="body2" color="initial">Address</Typography>
                                                 </Box>
 
                                                 <Box>
                                                     <Typography variant="body2" color="initial">{reliefCenterData[0].Phone}</Typography>
                                                     <Typography variant="body2" color="initial">{reliefCenterData[0].Capacity - reliefCenterData[0].Admission} <span> / </span>{reliefCenterData[0].Capacity}</Typography>
-                                                    <Typography variant="body2" color="primary">Karyavattom</Typography>
+                                                    <Typography variant="body2" color="primary">{reliefCenterData[0].Address}</Typography>
                                                 </Box>
                                             </Stack>
                                         </Grid>
 
 
-                                        <Grid item xs={3} sx={{ p: 3 }}>
-                                            <Stack direction="column" alignItems='center' justifyContent="center">
-                                                <Button variant="outlined" color="primary" size="small" onClick={() => handleAccomOpen()}>
+                                        <Grid item xs={6} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+                                            <Stack direction="column" alignItems='center' justifyContent="center" gap="1rem">
+                                                {/* <Button variant="outlined" color="primary" size="small" onClick={() => handleAccomOpen()}>
                                                     Add Accomodation
                                                 </Button>
+
+                                                <Button variant="outlined" color="primary" size="small" onClick={() => handleAccomOpen()}>
+                                                    Room Vacating
+                                                </Button> */}
+
+                                                <ButtonGroup
+                                                    disableElevation
+                                                    variant="outlined"
+                                                >
+                                                    <Button onClick={() => handleIncModal()}>Admint</Button>
+                                                    <Button onClick={() => handleDecModal()}>Vacate</Button>
+                                                </ButtonGroup>
                                             </Stack>
                                         </Grid>
                                     </Grid>
@@ -432,30 +474,58 @@ function MyReliefCenter() {
                     </Fade>
                 </Modal>
 
+
+                {/* Accomodation admitting modal */}
                 <Modal
-                    open={accomodationModal}
-                    onClose={handleAccomClose}
+                    open={accoIncModal}
+                    onClose={handleIncModalClose}
                     closeAfterTransition
                     BackdropComponent={Backdrop}
                     BackdropProps={{
                         timeout: 500,
                     }}
                 >
-                    <Fade in={accomodationModal}>
+                    <Fade in={accoIncModal}>
                         <Box sx={AccomModalstyle}>
                             <Typography variant="h6" color="initial">Add Accomodation</Typography>
                             <Stack direction="row" alignItems="center" justifyContent='center'>
-                                <Button onClick={() => setUpdateNumber(updateNumber !== 0 ? updateNumber - 1 : 0)}>-</Button>
+                                <Button></Button>
                                 <Typography variant="h2" color="primary">{updateNumber}</Typography>
-                                <Button onClick={() => setUpdateNumber(updateNumber !== 0 && updateNumber + 1)}>+</Button>
+                                <Button onClick={() => setUpdateNumber(updateNumber + 1)}>+</Button>
                             </Stack>
-                            <Button variant="outlined" color="primary" size="small" sx={{ mt: 2 }} onClick={() => handleSlotUpdate()}>
+                            <Button variant="outlined" color="primary" size="small" sx={{ mt: 2 }} onClick={() => handleIncrement()}>
                                 Update
                             </Button>
                         </Box>
                     </Fade>
                 </Modal>
-            </Container>
+
+
+                {/* Accomodation Vocating modal */}
+                <Modal
+                    open={accoDecModal}
+                    onClose={handleDecModalClose}
+                    closeAfterTransition
+                    BackdropComponent={Backdrop}
+                    BackdropProps={{
+                        timeout: 500,
+                    }}
+                >
+                    <Fade in={accoDecModal}>
+                        <Box sx={AccomModalstyle}>
+                            <Typography variant="h6" color="initial">Add Accomodation</Typography>
+                            <Stack direction="row" alignItems="center" justifyContent='center'>
+                                <Button></Button>
+                                <Typography variant="h2" color="primary">{updateNumber}</Typography>
+                                <Button onClick={() => setUpdateNumber(updateNumber + 1)}>+</Button>
+                            </Stack>
+                            <Button variant="outlined" color="primary" size="small" sx={{ mt: 2 }} onClick={() => handleDecrement()}>
+                                Update
+                            </Button>
+                        </Box>
+                    </Fade>
+                </Modal>
+            </Container >
         </>
     )
 }

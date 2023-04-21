@@ -35,6 +35,7 @@ function ReliefCenter() {
     { field: '_id', headerName: 'ID', width: 300 },
     { field: 'CenterName', headerName: 'First name', width: 300 },
     { field: 'Phone', headerName: 'Last name', width: 300 },
+    { field: 'Address', headerName: 'Address', width: 300, hideable: false, hide: true },
     {
       field: 'action',
       headerName: 'Action',
@@ -128,15 +129,15 @@ function ReliefCenter() {
                     </Typography>
                     <Box sx={{ width: '70%' }}>
                       <Typography variant="caption" color="secondary">
-                        Aswas Relief Center, Kadavantara, Erankulam Twn, 698438
+                        {modalData.Address}
                       </Typography>
                     </Box>
                     <Typography variant="caption" color="initial">
-                      +91 8129023910
+                      +91 {modalData.Phone}
                     </Typography>
                   </Box>
 
-                  <Box>
+                  {/* <Box>
                     <Stack direction="row" alignItems="baseLine" justifContent="center">
                       <Typography variant="h3" color="secondary">
                         23
@@ -147,7 +148,7 @@ function ReliefCenter() {
                     <Typography variant="body2" color="primary">
                       In Charge: Hareesh
                     </Typography>
-                  </Box>
+                  </Box> */}
                 </Stack>
               </Grid>
 

@@ -9,6 +9,7 @@ import axios from 'axios'
 
 function ReliefCenter() {
 
+
   // modal style
   const style = {
     position: 'absolute',
@@ -55,6 +56,7 @@ function ReliefCenter() {
     { field: 'Phone', headerName: 'Phone no', width: 300 },
     { field: 'Capacity', headerName: 'Capacity', width: 300 },
     { field: 'Admission', headerName: 'Admission', width: 300, hideable: false, hide: true },
+    { field: 'Address', headerName: 'Address', width: 300, hideable: false, hide: true },
     {
       field: 'Vaccancy',
       headerName: 'Vaccancy',
@@ -69,21 +71,6 @@ function ReliefCenter() {
       width: 160,
       hideable: false, hide: true
     },
-
-    // {
-    //   field: 'userName',
-    //   headerName: 'User Name',
-    //   width: 160,
-    //   valueGetter: (params: GridValueGetterParams) => {
-    //     const Incharge = `${params.row.InCharge}`
-    //     axios.get(`/user/getuser/${Incharge}`)
-    //       .then((res) => {
-    //         console.log('userDetails' + JSON.stringify(res.data.firstName))
-    //         setOutput(JSON.stringify(res.data.firstName))
-    //       })
-    //   },
-    //   value: output,
-    // },
 
     {
       field: 'action',
@@ -165,7 +152,7 @@ function ReliefCenter() {
                     </Typography>
                     <Box sx={{ width: '70%' }}>
                       <Typography variant="caption" color="secondary">
-                        Aswas Relief Center, Kadavantara, Erankulam Twn, 698438
+                        {modalData.Address}
                       </Typography>
                     </Box>
                     <Typography variant="caption" color="initial">
