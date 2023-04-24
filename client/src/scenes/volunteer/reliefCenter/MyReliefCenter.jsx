@@ -97,6 +97,8 @@ function MyReliefCenter() {
     };
 
 
+    // handle capacity
+    const [stateCapacity, setStateCapacity] = React.useState();
 
     const loadData = async () => {
         await axios.get(`/relief/getreliefcenterbyid/${userId}`)
@@ -104,6 +106,8 @@ function MyReliefCenter() {
                 console.log(res.data)
                 setReliefCenterData(res.data)
                 setReliefCenterId(res.data[0]._id)
+                setUpdateNumber(res.data[0].Admission)
+                setStateCapacity(res.data[0].Capacity)
                 const dataArr = res.data
                 if (dataArr.length === 0) {
                     setReliefCenter(false)
@@ -125,44 +129,6 @@ function MyReliefCenter() {
     // update slot
     const [updateSlot, setSlotUpdate] = useState(false)
     const [updateNumber, setUpdateNumber] = useState(0)
-    const [IncrementNumber, setIncrementNumber] = useState(0)
-    const [DecrementNumber, setDecrementNumber] = useState(0)
-
-    const handleIncrement = () => {
-        console.log('handle increment slot')
-        // const val = ((reliefCenterData[0].Capacity - reliefCenterData[0].Admission) - updateNumber)
-        setIncrementNumber((reliefCenterData[0].Capacity - reliefCenterData[0].Admission) - updateNumber)
-        axios.put(`relief/addadmission/${reliefCenterId}`, {
-            Admission: IncrementNumber
-        })
-            .then((res) => {
-                console.log(res)
-                loadData()
-                setSlotUpdate(0)
-                handleIncModalClose()
-            })
-            .catch((err) => {
-                console.log(err)
-            })
-    }
-
-
-    const handleDecrement = () => {
-        console.log('handle decrement slot')
-        axios.put(`relief/addadmission/${reliefCenterId}`, {
-            Admission: updateNumber
-        })
-            .then((res) => {
-                console.log(res)
-                loadData()
-                handleDecModalClose()
-            })
-            .catch((err) => {
-                console.log(err)
-            })
-    }
-
-
 
 
     // submit function of form
@@ -232,19 +198,26 @@ function MyReliefCenter() {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    const [accoIncModal, setAccoIncModal] = React.useState(false);
-    const [accoDecModal, setAccoDecModal] = React.useState(false);
 
-    const handleIncModal = () => setAccoIncModal(true);
-    const handleIncModalClose = () => {
-        setAccoIncModal(false);
-        setUpdateNumber(0)
-    };
-    const handleDecModal = () => setAccoDecModal(true);
-    const handleDecModalClose = () => {
-        setAccoDecModal(false);
-        setUpdateNumber(0)
-    };
+    const [accomodationModal, setAccomodationModal] = React.useState(false);
+    const handleIncModal = () => setAccomodationModal(true);
+    const handleIncModalClose = () => setAccomodationModal(false);
+
+    // update slot
+    const handleSlotUpdate = () => {
+        console.log('update slot')
+        axios.put(`relief/addadmission/${reliefCenterId}`, {
+            Admission: updateNumber
+        })
+            .then((res) => {
+                console.log(res)
+                loadData()
+                handleIncModalClose()
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
 
     // handle supply request
     const [item, setItem] = useState('')
@@ -272,6 +245,7 @@ function MyReliefCenter() {
                 console.log(err)
             })
     }
+
 
     return (
         <>
@@ -330,8 +304,8 @@ function MyReliefCenter() {
                                                     disableElevation
                                                     variant="outlined"
                                                 >
-                                                    <Button onClick={() => handleIncModal()}>Admint</Button>
-                                                    <Button onClick={() => handleDecModal()}>Vacate</Button>
+                                                    <Button onClick={() => handleIncModal()}>Update Vaccancy</Button>
+
                                                 </ButtonGroup>
                                             </Stack>
                                         </Grid>
@@ -475,9 +449,10 @@ function MyReliefCenter() {
                 </Modal>
 
 
-                {/* Accomodation admitting modal */}
+
+                {/* Accomodation  modal */}
                 <Modal
-                    open={accoIncModal}
+                    open={accomodationModal}
                     onClose={handleIncModalClose}
                     closeAfterTransition
                     BackdropComponent={Backdrop}
@@ -485,41 +460,27 @@ function MyReliefCenter() {
                         timeout: 500,
                     }}
                 >
-                    <Fade in={accoIncModal}>
+                    <Fade in={accomodationModal}>
                         <Box sx={AccomModalstyle}>
-                            <Typography variant="h6" color="initial">Add Accomodation</Typography>
+                            <Typography variant="h6" color="initial">Update Vaccancy</Typography>
                             <Stack direction="row" alignItems="center" justifyContent='center'>
-                                <Button></Button>
-                                <Typography variant="h2" color="primary">{updateNumber}</Typography>
-                                <Button onClick={() => setUpdateNumber(updateNumber + 1)}>+</Button>
-                            </Stack>
-                            <Button variant="outlined" color="primary" size="small" sx={{ mt: 2 }} onClick={() => handleIncrement()}>
-                                Update
-                            </Button>
-                        </Box>
-                    </Fade>
-                </Modal>
+                                {
+                                    updateNumber === 0 ? <Button></Button> : <Button onClick={() => setUpdateNumber(updateNumber - 1)}>-</Button>
+                                }
 
-
-                {/* Accomodation Vocating modal */}
-                <Modal
-                    open={accoDecModal}
-                    onClose={handleDecModalClose}
-                    closeAfterTransition
-                    BackdropComponent={Backdrop}
-                    BackdropProps={{
-                        timeout: 500,
-                    }}
-                >
-                    <Fade in={accoDecModal}>
-                        <Box sx={AccomModalstyle}>
-                            <Typography variant="h6" color="initial">Add Accomodation</Typography>
-                            <Stack direction="row" alignItems="center" justifyContent='center'>
-                                <Button></Button>
                                 <Typography variant="h2" color="primary">{updateNumber}</Typography>
-                                <Button onClick={() => setUpdateNumber(updateNumber + 1)}>+</Button>
+                                {
+                                    updateNumber === stateCapacity ? <Button></Button> : <Button onClick={() => setUpdateNumber(updateNumber + 1)}>+</Button>
+                                }
+                                {
+                                    console.log(`updateNo: ${updateNumber} & capacity: ${stateCapacity}`),
+                                    updateNumber === stateCapacity ? console.log('print btn') : console.log('dont print button'),
+                                    console.log(updateNumber === stateCapacity)
+                                }
+
+                                {/* <Button onClick={() => setUpdateNumber(updateNumber !== 0 && updateNumber + 1)}>+</Button> */}
                             </Stack>
-                            <Button variant="outlined" color="primary" size="small" sx={{ mt: 2 }} onClick={() => handleDecrement()}>
+                            <Button variant="outlined" color="primary" size="small" sx={{ mt: 2 }} onClick={() => handleSlotUpdate()}>
                                 Update
                             </Button>
                         </Box>
