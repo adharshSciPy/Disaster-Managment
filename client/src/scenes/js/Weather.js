@@ -10,6 +10,7 @@ import { SpinnerCircular } from "spinners-react";
 
 import WeatherData from "./WeatherData";
 import WeatherForecast from "./WeatherForecast";
+import ShareButton from "./ShareButton"; // Import the ShareButton component
 
 import "../css/Weather.css";
 
@@ -87,39 +88,43 @@ export default function Weather(props) {
             </button>
           </div>
         </form>
+        
         <WeatherData data={weatherData} />
+        
+        {/* Add Share Button here */}
+        <ShareButton weatherData={weatherData} />
+        
         <WeatherForecast coords={weatherData.coords} />
 
-        <div class="collapse" id="collapseExample">
-          <div class="card card-body">
+        <div className="collapse" id="collapseExample">
+          <div className="card card-body">
             Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
           </div>
         </div>
 
-        <div class="alert card green lighten-4 green-text text-darken-4">
-          <div class="card-content">
+        <div className="alert card green lighten-4 green-text text-darken-4">
+          <div className="card-content">
             <p> <FcOk/><span>Safe     </span> There is no alerts to show</p>
           </div>
         </div>
 
+        {/* Commented flood alerts - you can uncomment these when needed */}
+        {/* <div className="alert card red lighten-4 red-text text-darken-4">
+          <div className="card-content">
+            <p><FcAdvertising /><strong>Warning</strong> </p><p> Thodupuzha, Edukki : <b>Current Water Level :</b>38.135 <FcRightDown></FcRightDown> <b>Danger Water Level : </b>37.5 </p>
+          </div>
+        </div>
 
-
-  {/* <div class="alert card red lighten-4 red-text text-darken-4">
-		<div class="card-content">
-			<p><FcAdvertising /><strong>Warning</strong> </p><p> Thodupuzha, Edukki : <b>Current Water Level :</b>38.135 <FcRightDown></FcRightDown> <b>Danger Water Level : </b>37.5 </p>
-		</div>
-	</div>
-
-  <div class="alert card amber lighten-4 brown-text">
-		<div class="card-content">
-			<p><FcAdvertising /><strong>Warning</strong> </p><p> Periyar, Edukki : <b>Current Water Level :</b>793.78 <FcRightDown></FcRightDown> <b>Danger Water Level : </b>795.2 </p>
-		</div>
-	</div>
-  <div class="alert card red lighten-4 red-text text-darken-4">
-		<div class="card-content">
-			<p><FcAdvertising /><strong>Warning</strong> </p><p> Manimala, Edukki : <b>Current Water Level :</b>79.5 <FcRightDown></FcRightDown> <b>Danger Water Level : </b>78.4 </p>
-		</div>
-	</div> */}
+        <div className="alert card amber lighten-4 brown-text">
+          <div className="card-content">
+            <p><FcAdvertising /><strong>Warning</strong> </p><p> Periyar, Edukki : <b>Current Water Level :</b>793.78 <FcRightDown></FcRightDown> <b>Danger Water Level : </b>795.2 </p>
+          </div>
+        </div>
+        <div className="alert card red lighten-4 red-text text-darken-4">
+          <div className="card-content">
+            <p><FcAdvertising /><strong>Warning</strong> </p><p> Manimala, Edukki : <b>Current Water Level :</b>79.5 <FcRightDown></FcRightDown> <b>Danger Water Level : </b>78.4 </p>
+          </div>
+        </div> */}
    
       </div>
     );
